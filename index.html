@@ -15,84 +15,37 @@
     --text: #e2e8f0;
     --muted: #64748b;
     --green: #10b981;
+    --google-blue: #4285f4;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    overflow-x: hidden;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; overflow-x: hidden; }
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
   }
   nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
     padding: 1rem 3rem;
     background: rgba(10,14,23,0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
   }
-  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--accent); letter-spacing: -0.5px; }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--accent); }
   .nav-links { display: flex; gap: 2rem; list-style: none; }
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover { color: var(--accent); }
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 6rem 3rem 3rem;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-  }
-  .hero-tag {
-    display: inline-block;
-    font-size: 0.7rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(0,212,255,0.3);
-    padding: 0.3rem 0.8rem;
-    margin-bottom: 1.5rem;
-    border-radius: 2px;
-    animation: fadeUp 0.8s ease both;
-  }
-  .hero-name {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.2rem, 4vw, 3.5rem);
-    font-weight: 800;
-    line-height: 1.1;
-    animation: fadeUp 0.8s 0.1s ease both;
-  }
-  .hero-name span {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  .hero { min-height: 100vh; display: flex; align-items: center; padding: 6rem 3rem 3rem; position: relative; z-index: 1; }
+  .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .hero-tag { display: inline-block; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(0,212,255,0.3); padding: 0.3rem 0.8rem; margin-bottom: 1.5rem; border-radius: 2px; animation: fadeUp 0.8s ease both; }
+  .hero-name { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.1; animation: fadeUp 0.8s 0.1s ease both; }
+  .hero-name span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .hero-degree { margin-top: 1rem; color: var(--muted); font-size: 0.8rem; line-height: 1.7; animation: fadeUp 0.8s 0.2s ease both; }
   .hero-degree strong { color: var(--green); font-weight: 600; }
   .hero-btns { display: flex; gap: 1rem; margin-top: 2rem; animation: fadeUp 0.8s 0.3s ease both; }
@@ -102,35 +55,10 @@
   .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
   .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
   .hero-visual { display: flex; justify-content: center; animation: fadeUp 0.8s 0.2s ease both; }
-  .avatar-frame {
-    position: relative;
-    width: 300px;
-    height: 300px;
-  }
-  .avatar-frame::before {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
-    border-radius: 50%;
-    animation: spin 6s linear infinite;
-    z-index: 0;
-  }
-  .avatar-frame::after {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    background: var(--bg);
-    border-radius: 50%;
-    z-index: 1;
-  }
-  .avatar-img {
-    position: absolute;
-    inset: 8px;
-    border-radius: 50%;
-    z-index: 2;
-    overflow: hidden;
-  }
+  .avatar-frame { position: relative; width: 300px; height: 300px; }
+  .avatar-frame::before { content: ''; position: absolute; inset: -3px; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent)); border-radius: 50%; animation: spin 6s linear infinite; z-index: 0; }
+  .avatar-frame::after { content: ''; position: absolute; inset: 3px; background: var(--bg); border-radius: 50%; z-index: 1; }
+  .avatar-img { position: absolute; inset: 8px; border-radius: 50%; z-index: 2; overflow: hidden; }
   .avatar-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
   .status { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; color: var(--green); margin-top: 1rem; animation: fadeUp 0.8s 0.4s ease both; }
   .status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
@@ -158,6 +86,40 @@
   .project-link { font-size: 0.65rem; letter-spacing: 1px; color: var(--accent); text-decoration: none; text-transform: uppercase; border-bottom: 1px solid rgba(0,212,255,0.3); padding-bottom: 2px; transition: border-color 0.2s; }
   .project-link:hover { border-color: var(--accent); }
   .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  /* BADGES */
+  .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
+  .badge-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .badge-card:hover { border-color: var(--google-blue); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(66,133,244,0.15); }
+  .badge-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(66,133,244,0.05));
+    border: 2px solid rgba(66,133,244,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  .badge-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; line-height: 1.4; }
+  .badge-issuer { font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--google-blue); }
+  .badge-series { font-size: 0.65rem; color: var(--muted); }
+  .badge-link-text { font-size: 0.62rem; letter-spacing: 1px; color: var(--google-blue); text-transform: uppercase; border-bottom: 1px solid rgba(66,133,244,0.3); padding-bottom: 2px; }
+
   .contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
   .contact-headline { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
   .contact-sub { color: var(--muted); font-size: 0.75rem; line-height: 1.7; margin-bottom: 1.5rem; }
@@ -193,6 +155,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#certifications">Certifications</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -202,14 +165,8 @@
     <div class="hero-text">
       <span class="hero-tag">// Portfolio</span>
       <h1 class="hero-name">David Joseph<br><span>Cortez</span></h1>
-      <p class="hero-degree">
-        B.S. Computer Science<br>
-        <strong>Data Science &amp; Analytics</strong>
-      </p>
-      <div class="status">
-        <span class="status-dot"></span>
-        Open to opportunities
-      </div>
+      <p class="hero-degree">B.S. Computer Science<br><strong>Data Science &amp; Analytics</strong></p>
+      <div class="status"><span class="status-dot"></span>Open to opportunities</div>
       <div class="hero-btns">
         <a href="#projects" class="btn btn-primary">View Projects</a>
         <a href="#contact" class="btn btn-outline">Contact Me</a>
@@ -233,39 +190,27 @@
   <div class="skills-grid fade-in">
     <div class="skill-card">
       <div class="skill-card-label">Languages</div>
-      <div class="skill-tags">
-        <span class="tag">Python</span><span class="tag">Java</span><span class="tag">Kotlin</span>
-      </div>
+      <div class="skill-tags"><span class="tag">Python</span><span class="tag">Java</span><span class="tag">Kotlin</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-label">Frontend</div>
-      <div class="skill-tags">
-        <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span>
-      </div>
+      <div class="skill-tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-label">Data &amp; Analytics</div>
-      <div class="skill-tags">
-        <span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">Matplotlib</span>
-      </div>
+      <div class="skill-tags"><span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">Matplotlib</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-label">Database</div>
-      <div class="skill-tags">
-        <span class="tag">PostgreSQL</span><span class="tag">MySQL</span>
-      </div>
+      <div class="skill-tags"><span class="tag">PostgreSQL</span><span class="tag">MySQL</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-label">Tools</div>
-      <div class="skill-tags">
-        <span class="tag">VS Code</span><span class="tag">Git</span><span class="tag">Android Studio</span><span class="tag">Supabase</span><span class="tag">Power BI</span>
-      </div>
+      <div class="skill-tags"><span class="tag">VS Code</span><span class="tag">Git</span><span class="tag">Android Studio</span><span class="tag">Supabase</span><span class="tag">Power BI</span></div>
     </div>
     <div class="skill-card">
       <div class="skill-card-label">AI Tools</div>
-      <div class="skill-tags">
-        <span class="tag">Claude</span><span class="tag">Gemini</span><span class="tag">ChatGPT</span><span class="tag">Copilot</span><span class="tag">V0</span>
-      </div>
+      <div class="skill-tags"><span class="tag">Claude</span><span class="tag">Gemini</span><span class="tag">ChatGPT</span><span class="tag">Copilot</span><span class="tag">V0</span></div>
     </div>
   </div>
 </section>
@@ -276,10 +221,9 @@
   <p class="section-label">// 03. work</p>
   <h2 class="section-title fade-in">Projects</h2>
   <div class="projects-grid fade-in">
-
     <div class="project-card">
       <div class="project-thumb project-thumb-void">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
           <rect x="10" y="10" width="60" height="60" rx="4" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="4 4"/>
           <circle cx="40" cy="40" r="16" stroke="#00d4ff" stroke-width="1.5"/>
           <line x1="40" y1="10" x2="40" y2="70" stroke="#7c3aed" stroke-width="0.8" opacity="0.5"/>
@@ -292,16 +236,13 @@
         <p class="project-desc">A laboratory-style project exploring data, systems, and experimental builds. A space for creative technical experimentation and research-driven development.</p>
         <div class="project-footer">
           <a href="https://github.com/djncortez/VOID.LAB" target="_blank" class="project-link">View on GitHub →</a>
-          <div class="project-tags">
-            <span class="tag">Python</span><span class="tag">Data</span>
-          </div>
+          <div class="project-tags"><span class="tag">Python</span><span class="tag">Data</span></div>
         </div>
       </div>
     </div>
-
     <div class="project-card">
       <div class="project-thumb project-thumb-flight">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
           <path d="M15 55 L35 30 L45 38 L60 20 L65 25 L45 48 L55 56 L50 62 L38 52 L28 65 Z" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
           <polyline points="15,60 25,50 38,55 55,35 65,30" stroke="#7c3aed" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>
           <circle cx="65" cy="30" r="3" fill="#10b981"/>
@@ -312,12 +253,59 @@
         <p class="project-desc">A data analysis and prediction project focused on flight pricing trends. Leverages machine learning and analytics to uncover patterns in airfare data.</p>
         <div class="project-footer">
           <a href="https://github.com/djncortez/FlightPrice" target="_blank" class="project-link">View on GitHub →</a>
-          <div class="project-tags">
-            <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">ML</span>
-          </div>
+          <div class="project-tags"><span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">ML</span></div>
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="certifications">
+  <p class="section-label">// 04. credentials</p>
+  <h2 class="section-title fade-in">Certifications &amp; Badges</h2>
+  <div class="badges-grid fade-in">
+
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9383544" target="_blank" class="badge-card">
+      <div class="badge-icon">☁️</div>
+      <div>
+        <div class="badge-issuer">Google Cloud</div>
+        <div class="badge-title">Cloud Computing Fundamentals</div>
+        <div class="badge-series">Google Cloud Computing Foundations</div>
+      </div>
+      <div class="badge-link-text">View Badge →</div>
+    </a>
+
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9769420" target="_blank" class="badge-card">
+      <div class="badge-icon">🏗️</div>
+      <div>
+        <div class="badge-issuer">Google Cloud</div>
+        <div class="badge-title">Infrastructure in Google Cloud</div>
+        <div class="badge-series">Google Cloud Computing Foundations</div>
+      </div>
+      <div class="badge-link-text">View Badge →</div>
+    </a>
+
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9775363" target="_blank" class="badge-card">
+      <div class="badge-icon">🔐</div>
+      <div>
+        <div class="badge-issuer">Google Cloud</div>
+        <div class="badge-title">Networking &amp; Security in Google Cloud</div>
+        <div class="badge-series">Google Cloud Computing Foundations</div>
+      </div>
+      <div class="badge-link-text">View Badge →</div>
+    </a>
+
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9780399" target="_blank" class="badge-card">
+      <div class="badge-icon">🤖</div>
+      <div>
+        <div class="badge-issuer">Google Cloud</div>
+        <div class="badge-title">Data, ML, and AI in Google Cloud</div>
+        <div class="badge-series">Google Cloud Computing Foundations</div>
+      </div>
+      <div class="badge-link-text">View Badge →</div>
+    </a>
 
   </div>
 </section>
@@ -325,7 +313,7 @@
 <div class="divider"></div>
 
 <section id="contact">
-  <p class="section-label">// 04. connect</p>
+  <p class="section-label">// 05. connect</p>
   <div class="contact-box fade-in">
     <div>
       <h2 class="contact-headline">Let's build<br>something<br><span style="color:var(--accent)">together.</span></h2>
