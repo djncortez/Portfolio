@@ -94,6 +94,9 @@
   .project-card:hover .project-thumb::after, .project-card:focus-visible .project-thumb::after { opacity: 1; }
   .project-thumb-ready { background: #f8f7ff; }
   .project-thumb-ready img { object-position: center 32%; }
+  .project-card-static { cursor: pointer; }
+  .project-card-static .project-thumb::after { content: 'Launch live demo \2192'; }
+  .project-thumb-aqi img { object-position: center 20%; }
   .project-thumb-void { background: linear-gradient(135deg, #0d1117, #1a0533); }
   .project-thumb-flight { background: linear-gradient(135deg, #0a1628, #0d2a4a); }
   .project-thumb svg { opacity: 0.4; position: relative; z-index: 1; }
@@ -105,6 +108,8 @@
   .project-card:hover .project-link, .project-card:focus-visible .project-link { background: transparent; color: var(--accent); box-shadow: 0 0 16px rgba(0,212,255,0.2); }
   .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
   .project-tags .tag { color: var(--muted); background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.2); font-size: 0.62rem; }
+  .project-source-link { font-size: 0.65rem; letter-spacing: 1px; color: var(--accent); text-decoration: none; text-transform: uppercase; border-bottom: 1px solid rgba(0,212,255,0.3); padding-bottom: 2px; }
+  .project-source-link:hover { border-color: var(--accent); }
 
   /* EXPERIENCE */
   .experience-card {
@@ -507,6 +512,20 @@
         </div>
       </div>
     </a>
+    <article class="project-card project-card-static" data-live-url="https://aqi-prediction-mvc-flask-r8v1.vercel.app/" role="link" tabindex="0" aria-label="Open AQI Prediction live demo">
+      <div class="project-thumb project-thumb-aqi">
+        <img src="assets/aqi-prediction-thumbnail.png" alt="AQI Prediction System air pollutant input form" loading="lazy">
+      </div>
+      <div class="project-body">
+        <h3 class="project-title">AQI Prediction</h3>
+        <p class="project-desc">A Python Flask MVC web application that predicts air quality and makes the result easy to explore in a deployed web experience.</p>
+        <div class="project-footer">
+          <a href="https://aqi-prediction-mvc-flask-r8v1.vercel.app/" target="_blank" rel="noopener noreferrer" class="project-link">Live Demo &nearr;</a>
+          <a href="https://github.com/djncortez/AQI-Prediction-MVC-Flask" target="_blank" rel="noopener noreferrer" class="project-source-link">GitHub &rarr;</a>
+          <div class="project-tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">MVC</span></div>
+        </div>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -628,6 +647,14 @@
     navLinks.classList.remove('is-open');
     navToggle.setAttribute('aria-expanded', 'false');
   }));
+
+  document.querySelectorAll('.project-card-static[data-live-url]').forEach(card => {
+    const openDemo = () => window.open(card.dataset.liveUrl, '_blank', 'noopener');
+    card.addEventListener('click', event => { if (!event.target.closest('a')) openDemo(); });
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDemo(); }
+    });
+  });
 </script>
 </body>
 </html>
