@@ -80,6 +80,7 @@
   .project-thumb { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #0d1117; }
   .project-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.9; transition: transform 0.35s ease, opacity 0.35s ease; }
   .project-card:hover .project-thumb img { transform: scale(1.04); opacity: 1; }
+  .project-thumb-ready img { object-position: center top; }
   .project-thumb-void { background: linear-gradient(135deg, #0d1117, #1a0533); }
   .project-thumb-flight { background: linear-gradient(135deg, #0a1628, #0d2a4a); }
   .project-thumb svg { opacity: 0.4; position: relative; z-index: 1; }
@@ -388,7 +389,7 @@
   <div class="projects-grid fade-in">
     <div class="project-card">
       <div class="project-thumb project-thumb-void">
-        <img src="https://opengraph.githubassets.com/1/djncortez/VOID.LAB" alt="VOID.LAB repository preview" loading="lazy">
+        <img src="assets/void-lab-thumbnail.png" alt="VOID.LAB experimental visual playground screenshot" loading="lazy">
       </div>
       <div class="project-body">
         <h3 class="project-title">VOID.LAB</h3>
@@ -401,7 +402,7 @@
     </div>
     <div class="project-card">
       <div class="project-thumb project-thumb-flight">
-        <img src="https://opengraph.githubassets.com/1/djncortez/FlightPrice" alt="FlightPrice repository preview" loading="lazy">
+        <img src="assets/flightprice-thumbnail.png" alt="FlightPrice trend analyzer dashboard screenshot" loading="lazy">
       </div>
       <div class="project-body">
         <h3 class="project-title">FlightPrice</h3>
@@ -413,8 +414,8 @@
       </div>
     </div>
     <div class="project-card">
-      <div class="project-thumb">
-        <img src="https://opengraph.githubassets.com/1/djncortez/Ready-Set-Kinder" alt="Ready Set Kinder repository preview" loading="lazy">
+      <div class="project-thumb project-thumb-ready">
+        <img src="assets/ready-set-kinder-thumbnail.png" alt="Ready Set Kinder sign-in screen screenshot" loading="lazy">
       </div>
       <div class="project-body">
         <h3 class="project-title">Ready Set Kinder</h3>
