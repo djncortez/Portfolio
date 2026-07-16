@@ -75,11 +75,14 @@
   .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .tag { font-size: 0.7rem; padding: 0.25rem 0.6rem; background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.15); border-radius: 3px; color: var(--text); }
   .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
   .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .project-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   .project-thumb { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #0d1117; }
   .project-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.9; transition: transform 0.35s ease, opacity 0.35s ease; }
   .project-card:hover .project-thumb img { transform: scale(1.04); opacity: 1; }
+  .project-thumb::after { content: 'View project \2192'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(10,14,23,0.72); color: var(--accent); font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: opacity 0.2s ease; }
+  .project-card:hover .project-thumb::after, .project-card:focus-visible .project-thumb::after { opacity: 1; }
   .project-thumb-ready img { object-position: center top; }
   .project-thumb-void { background: linear-gradient(135deg, #0d1117, #1a0533); }
   .project-thumb-flight { background: linear-gradient(135deg, #0a1628, #0d2a4a); }
@@ -387,7 +390,7 @@
   <p class="section-label">// 04. work</p>
   <h2 class="section-title fade-in">Projects</h2>
   <div class="projects-grid fade-in">
-    <div class="project-card">
+    <div class="project-card" data-project-url="https://github.com/djncortez/VOID.LAB" role="link" tabindex="0" aria-label="Open VOID.LAB on GitHub">
       <div class="project-thumb project-thumb-void">
         <img src="assets/void-lab-thumbnail.png" alt="VOID.LAB experimental visual playground screenshot" loading="lazy">
       </div>
@@ -400,7 +403,7 @@
         </div>
       </div>
     </div>
-    <div class="project-card">
+    <div class="project-card" data-project-url="https://github.com/djncortez/FlightPrice" role="link" tabindex="0" aria-label="Open FlightPrice on GitHub">
       <div class="project-thumb project-thumb-flight">
         <img src="assets/flightprice-thumbnail.png" alt="FlightPrice trend analyzer dashboard screenshot" loading="lazy">
       </div>
@@ -413,7 +416,7 @@
         </div>
       </div>
     </div>
-    <div class="project-card">
+    <div class="project-card" data-project-url="https://github.com/djncortez/Ready-Set-Kinder" role="link" tabindex="0" aria-label="Open Ready Set Kinder on GitHub">
       <div class="project-thumb project-thumb-ready">
         <img src="assets/ready-set-kinder-thumbnail.png" alt="Ready Set Kinder sign-in screen screenshot" loading="lazy">
       </div>
@@ -516,6 +519,19 @@
     entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible'); });
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.project-card[data-project-url]').forEach(card => {
+    const openProject = () => window.open(card.dataset.projectUrl, '_blank', 'noopener');
+    card.addEventListener('click', event => {
+      if (!event.target.closest('a')) openProject();
+    });
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openProject();
+      }
+    });
+  });
 </script>
 </body>
 </html>
