@@ -77,7 +77,9 @@
   .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
   .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
   .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-  .project-thumb { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .project-thumb { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #0d1117; }
+  .project-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.9; transition: transform 0.35s ease, opacity 0.35s ease; }
+  .project-card:hover .project-thumb img { transform: scale(1.04); opacity: 1; }
   .project-thumb-void { background: linear-gradient(135deg, #0d1117, #1a0533); }
   .project-thumb-flight { background: linear-gradient(135deg, #0a1628, #0d2a4a); }
   .project-thumb svg { opacity: 0.4; position: relative; z-index: 1; }
@@ -386,13 +388,7 @@
   <div class="projects-grid fade-in">
     <div class="project-card">
       <div class="project-thumb project-thumb-void">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-          <rect x="10" y="10" width="60" height="60" rx="4" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="4 4"/>
-          <circle cx="40" cy="40" r="16" stroke="#00d4ff" stroke-width="1.5"/>
-          <line x1="40" y1="10" x2="40" y2="70" stroke="#7c3aed" stroke-width="0.8" opacity="0.5"/>
-          <line x1="10" y1="40" x2="70" y2="40" stroke="#7c3aed" stroke-width="0.8" opacity="0.5"/>
-          <circle cx="40" cy="40" r="4" fill="#00d4ff"/>
-        </svg>
+        <img src="https://opengraph.githubassets.com/1/djncortez/VOID.LAB" alt="VOID.LAB repository preview" loading="lazy">
       </div>
       <div class="project-body">
         <h3 class="project-title">VOID.LAB</h3>
@@ -405,11 +401,7 @@
     </div>
     <div class="project-card">
       <div class="project-thumb project-thumb-flight">
-        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-          <path d="M15 55 L35 30 L45 38 L60 20 L65 25 L45 48 L55 56 L50 62 L38 52 L28 65 Z" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
-          <polyline points="15,60 25,50 38,55 55,35 65,30" stroke="#7c3aed" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>
-          <circle cx="65" cy="30" r="3" fill="#10b981"/>
-        </svg>
+        <img src="https://opengraph.githubassets.com/1/djncortez/FlightPrice" alt="FlightPrice repository preview" loading="lazy">
       </div>
       <div class="project-body">
         <h3 class="project-title">FlightPrice</h3>
@@ -417,6 +409,19 @@
         <div class="project-footer">
           <a href="https://github.com/djncortez/FlightPrice" target="_blank" class="project-link">View on GitHub →</a>
           <div class="project-tags"><span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">ML</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-thumb">
+        <img src="https://opengraph.githubassets.com/1/djncortez/Ready-Set-Kinder" alt="Ready Set Kinder repository preview" loading="lazy">
+      </div>
+      <div class="project-body">
+        <h3 class="project-title">Ready Set Kinder</h3>
+        <p class="project-desc">A Kotlin project currently in development. This repository will showcase a kindergarten-focused application as its features are built out.</p>
+        <div class="project-footer">
+          <a href="https://github.com/djncortez/Ready-Set-Kinder" target="_blank" class="project-link">View on GitHub &rarr;</a>
+          <div class="project-tags"><span class="tag">Kotlin</span><span class="tag">In Development</span></div>
         </div>
       </div>
     </div>
