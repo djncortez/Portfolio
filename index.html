@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>David Joseph Cortez</title>
+<meta name="description" content="Portfolio of David Joseph Cortez, a Computer Science graduate specializing in data science, analytics, and software development.">
+<meta property="og:title" content="David Joseph Cortez | Portfolio">
+<meta property="og:description" content="Computer Science graduate specializing in data science, analytics, and software development.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0e17">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a0e17'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-size='25' font-weight='700' fill='%2300d4ff'%3EDJC%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -41,6 +47,8 @@
   .nav-links { display: flex; gap: 2rem; list-style: none; }
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover { color: var(--accent); }
+  .nav-toggle { display: none; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 4px; padding: 0.45rem 0.6rem; font: inherit; font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+  .nav-toggle:hover, .nav-toggle:focus-visible { border-color: var(--accent); color: var(--accent); }
   .hero { min-height: 100vh; display: flex; align-items: center; padding: 6rem 3rem 3rem; position: relative; z-index: 1; }
   .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
   .hero-tag { display: inline-block; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(0,212,255,0.3); padding: 0.3rem 0.8rem; margin-bottom: 1.5rem; border-radius: 2px; animation: fadeUp 0.8s ease both; }
@@ -75,7 +83,7 @@
   .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .tag { font-size: 0.7rem; padding: 0.25rem 0.6rem; background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.15); border-radius: 3px; color: var(--text); }
   .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
+  .project-card { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; color: var(--text); text-decoration: none; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
   .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
   .project-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   .project-thumb { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #0d1117; }
@@ -93,7 +101,7 @@
   .project-desc { color: var(--muted); font-size: 0.72rem; line-height: 1.7; margin-bottom: 1rem; }
   .project-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
   .project-link { font-size: 0.65rem; letter-spacing: 1px; color: var(--bg); background: var(--accent); text-decoration: none; text-transform: uppercase; border: 1px solid var(--accent); border-radius: 3px; padding: 0.45rem 0.65rem; font-weight: 700; transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
-  .project-link:hover { background: transparent; color: var(--accent); box-shadow: 0 0 16px rgba(0,212,255,0.2); }
+  .project-card:hover .project-link, .project-card:focus-visible .project-link { background: transparent; color: var(--accent); box-shadow: 0 0 16px rgba(0,212,255,0.2); }
   .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
   .project-tags .tag { color: var(--muted); background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.2); font-size: 0.62rem; }
 
@@ -205,7 +213,10 @@
   .fade-in.visible { opacity: 1; transform: translateY(0); }
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
+    .nav-toggle { display: block; }
     .nav-links { display: none; }
+    .nav-links.is-open { display: flex; flex-direction: column; gap: 0; position: absolute; top: calc(100% + 1px); left: 0; right: 0; padding: 0.5rem 1.5rem 1rem; background: rgba(10,14,23,0.98); border-bottom: 1px solid var(--border); }
+    .nav-links.is-open a { display: block; padding: 0.8rem 0; }
     .hero { padding: 5rem 1.5rem 2rem; }
     .hero-inner { grid-template-columns: 1fr; text-align: center; }
     .hero-visual { order: -1; }
@@ -217,13 +228,17 @@
     .exp-screens { grid-template-columns: 1fr; }
     .exp-meta { text-align: left; }
   }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+  }
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo">DJC</div>
-  <ul class="nav-links">
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+  <ul class="nav-links" id="primary-navigation">
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#experience">Experience</a></li>
@@ -243,7 +258,7 @@
       <div class="hero-btns">
         <a href="#projects" class="btn btn-primary">View Projects</a>
         <a href="#contact" class="btn btn-outline">Contact Me</a>
-        <a href="Cortez_CV.pdf" target="_blank" class="btn btn-cv">
+        <a href="Cortez_CV.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-cv">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
           View CV
         </a>
@@ -309,7 +324,7 @@
       <div class="exp-meta">
         <div><strong>May 2026</strong> &mdash; Present</div>
         <div>480 hrs practicum engagement</div>
-        <a href="Cortez_Narrative_Report.pdf" target="_blank" class="exp-report-link">
+        <a href="Cortez_Narrative_Report.pdf" target="_blank" rel="noopener noreferrer" class="exp-report-link">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Full Narrative Report →
         </a>
@@ -317,7 +332,7 @@
     </div>
 
     <p class="exp-desc">
-      Completed an on-the-job training practicum at STMicroelectronics, a global semiconductor
+      Completing an on-the-job training practicum at STMicroelectronics, a global semiconductor
       manufacturer, where I was assigned to the B2F2 Operations 2/3 department. My core assignment
       was designing and building the <strong style="color:var(--text)">MBO Sawing Report System</strong> &mdash;
       an internal web application that digitizes the department's MBO sawing report process,
@@ -392,33 +407,33 @@
   <p class="section-label">// 04. work</p>
   <h2 class="section-title fade-in">Projects</h2>
   <div class="projects-grid fade-in">
-    <div class="project-card" data-project-url="https://github.com/djncortez/VOID.LAB" role="link" tabindex="0" aria-label="Open VOID.LAB on GitHub">
+    <a href="https://github.com/djncortez/VOID.LAB" target="_blank" rel="noopener noreferrer" class="project-card" aria-label="Open VOID.LAB on GitHub">
       <div class="project-thumb project-thumb-void">
         <img src="assets/void-lab-thumbnail.png" alt="VOID.LAB experimental visual playground screenshot" loading="lazy">
       </div>
       <div class="project-body">
         <h3 class="project-title">VOID.LAB</h3>
-        <p class="project-desc">A laboratory-style project exploring data, systems, and experimental builds. A space for creative technical experimentation and research-driven development.</p>
+        <p class="project-desc">An experimental visual playground for browser-based motion graphics, generative systems, and interactive typography explorations.</p>
         <div class="project-footer">
-          <a href="https://github.com/djncortez/VOID.LAB" target="_blank" class="project-link">View on GitHub →</a>
+          <span class="project-link">View on GitHub →</span>
           <div class="project-tags"><span class="tag">Python</span><span class="tag">Data</span></div>
         </div>
       </div>
-    </div>
-    <div class="project-card" data-project-url="https://github.com/djncortez/FlightPrice" role="link" tabindex="0" aria-label="Open FlightPrice on GitHub">
+    </a>
+    <a href="https://github.com/djncortez/FlightPrice" target="_blank" rel="noopener noreferrer" class="project-card" aria-label="Open FlightPrice on GitHub">
       <div class="project-thumb project-thumb-flight">
         <img src="assets/flightprice-thumbnail.png" alt="FlightPrice trend analyzer dashboard screenshot" loading="lazy">
       </div>
       <div class="project-body">
         <h3 class="project-title">FlightPrice</h3>
-        <p class="project-desc">A data analysis and prediction project focused on flight pricing trends. Leverages machine learning and analytics to uncover patterns in airfare data.</p>
+        <p class="project-desc">A Python data-analysis project that explores airfare trends and uses machine learning to examine the patterns behind flight prices.</p>
         <div class="project-footer">
-          <a href="https://github.com/djncortez/FlightPrice" target="_blank" class="project-link">View on GitHub →</a>
+          <span class="project-link">View on GitHub →</span>
           <div class="project-tags"><span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">ML</span></div>
         </div>
       </div>
-    </div>
-    <div class="project-card" data-project-url="https://github.com/djncortez/Ready-Set-Kinder" role="link" tabindex="0" aria-label="Open Ready Set Kinder on GitHub">
+    </a>
+    <a href="https://github.com/djncortez/Ready-Set-Kinder" target="_blank" rel="noopener noreferrer" class="project-card" aria-label="Open Ready Set Kinder on GitHub">
       <div class="project-thumb project-thumb-ready">
         <img src="assets/ready-set-kinder-thumbnail.png" alt="Ready Set Kinder sign-in screen screenshot" loading="lazy">
       </div>
@@ -426,11 +441,11 @@
         <h3 class="project-title">Ready Set Kinder</h3>
         <p class="project-desc">A Kotlin project currently in development. This repository will showcase a kindergarten-focused application as its features are built out.</p>
         <div class="project-footer">
-          <a href="https://github.com/djncortez/Ready-Set-Kinder" target="_blank" class="project-link">View on GitHub &rarr;</a>
+          <span class="project-link">View on GitHub &rarr;</span>
           <div class="project-tags"><span class="tag">Kotlin</span><span class="tag">In Development</span></div>
         </div>
       </div>
-    </div>
+    </a>
   </div>
 </section>
 
@@ -441,7 +456,7 @@
   <h2 class="section-title fade-in">Certifications &amp; Badges</h2>
   <div class="badges-grid fade-in">
 
-    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9383544" target="_blank" class="badge-card">
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9383544" target="_blank" rel="noopener noreferrer" class="badge-card">
       <div class="badge-icon">☁️</div>
       <div>
         <div class="badge-issuer">Google Cloud</div>
@@ -451,7 +466,7 @@
       <div class="badge-link-text">View Badge →</div>
     </a>
 
-    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9769420" target="_blank" class="badge-card">
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9769420" target="_blank" rel="noopener noreferrer" class="badge-card">
       <div class="badge-icon">🏗️</div>
       <div>
         <div class="badge-issuer">Google Cloud</div>
@@ -461,7 +476,7 @@
       <div class="badge-link-text">View Badge →</div>
     </a>
 
-    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9775363" target="_blank" class="badge-card">
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9775363" target="_blank" rel="noopener noreferrer" class="badge-card">
       <div class="badge-icon">🔐</div>
       <div>
         <div class="badge-issuer">Google Cloud</div>
@@ -471,7 +486,7 @@
       <div class="badge-link-text">View Badge →</div>
     </a>
 
-    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9780399" target="_blank" class="badge-card">
+    <a href="https://www.skills.google/public_profiles/16f4f6da-2812-46db-ab64-b0c304c21801/badges/9780399" target="_blank" rel="noopener noreferrer" class="badge-card">
       <div class="badge-icon">🤖</div>
       <div>
         <div class="badge-issuer">Google Cloud</div>
@@ -498,13 +513,13 @@
         <div class="contact-icon">✉</div>
         <span>djnc61003@gmail.com</span>
       </a>
-      <a href="https://github.com/djncortez" target="_blank" class="contact-item">
+      <a href="https://github.com/djncortez" target="_blank" rel="noopener noreferrer" class="contact-item">
         <div class="contact-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58 0-.28-.01-1.03-.02-2.03-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.138 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.9-.01 3.29 0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
         </div>
         <span>github.com/djncortez</span>
       </a>
-      <a href="https://www.linkedin.com/in/david-joseph-cortez/" target="_blank" class="contact-item">
+      <a href="https://www.linkedin.com/in/david-joseph-cortez/" target="_blank" rel="noopener noreferrer" class="contact-item">
         <div class="contact-icon" style="font-weight:700;font-size:0.8rem">in</div>
         <span>david-joseph-cortez</span>
       </a>
@@ -522,18 +537,16 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-  document.querySelectorAll('.project-card[data-project-url]').forEach(card => {
-    const openProject = () => window.open(card.dataset.projectUrl, '_blank', 'noopener');
-    card.addEventListener('click', event => {
-      if (!event.target.closest('a')) openProject();
-    });
-    card.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        openProject();
-      }
-    });
+  const navToggle = document.querySelector('.nav-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', String(isOpen));
   });
+  navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+    navLinks.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }));
 </script>
 </body>
 </html>
