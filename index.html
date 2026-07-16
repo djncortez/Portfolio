@@ -92,9 +92,10 @@
   .project-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
   .project-desc { color: var(--muted); font-size: 0.72rem; line-height: 1.7; margin-bottom: 1rem; }
   .project-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
-  .project-link { font-size: 0.65rem; letter-spacing: 1px; color: var(--accent); text-decoration: none; text-transform: uppercase; border-bottom: 1px solid rgba(0,212,255,0.3); padding-bottom: 2px; transition: border-color 0.2s; }
-  .project-link:hover { border-color: var(--accent); }
+  .project-link { font-size: 0.65rem; letter-spacing: 1px; color: var(--bg); background: var(--accent); text-decoration: none; text-transform: uppercase; border: 1px solid var(--accent); border-radius: 3px; padding: 0.45rem 0.65rem; font-weight: 700; transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
+  .project-link:hover { background: transparent; color: var(--accent); box-shadow: 0 0 16px rgba(0,212,255,0.2); }
   .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .project-tags .tag { color: var(--muted); background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.2); font-size: 0.62rem; }
 
   /* EXPERIENCE */
   .experience-card {
