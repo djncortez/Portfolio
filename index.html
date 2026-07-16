@@ -194,8 +194,12 @@
   }
   .badge-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; line-height: 1.4; }
   .badge-issuer { font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--google-blue); }
+  .badge-issuer.coursera { color: #6b4eff; }
   .badge-series { font-size: 0.65rem; color: var(--muted); }
   .badge-link-text { font-size: 0.62rem; letter-spacing: 1px; color: var(--google-blue); text-transform: uppercase; border-bottom: 1px solid rgba(66,133,244,0.3); padding-bottom: 2px; }
+  .badge-card-coursera:hover { border-color: #6b4eff; box-shadow: 0 8px 30px rgba(107,78,255,0.15); }
+  .badge-card-coursera .badge-icon { background: linear-gradient(135deg, rgba(107,78,255,0.15), rgba(107,78,255,0.05)); border-color: rgba(107,78,255,0.3); color: #b9aaff; }
+  .badge-card-coursera .badge-link-text { color: #8f7dff; border-color: rgba(143,125,255,0.35); }
 
   .contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
   .contact-headline { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
@@ -494,6 +498,26 @@
         <div class="badge-series">Google Cloud Computing Foundations</div>
       </div>
       <div class="badge-link-text">View Badge →</div>
+    </a>
+
+    <a href="https://coursera.org/share/fd9a6b83cca169ccb411d3a023b2c59f" target="_blank" rel="noopener noreferrer" class="badge-card badge-card-coursera">
+      <div class="badge-icon">C</div>
+      <div>
+        <div class="badge-issuer coursera">Coursera &middot; Google</div>
+        <div class="badge-title">Google Data Analytics</div>
+        <div class="badge-series">Professional Certificate</div>
+      </div>
+      <div class="badge-link-text">View Credential →</div>
+    </a>
+
+    <a href="https://coursera.org/share/257fbac10c993e8d1614e61597b4735c" target="_blank" rel="noopener noreferrer" class="badge-card badge-card-coursera">
+      <div class="badge-icon">C</div>
+      <div>
+        <div class="badge-issuer coursera">Coursera &middot; IBM</div>
+        <div class="badge-title">IBM AI Developer</div>
+        <div class="badge-series">Professional Certificate</div>
+      </div>
+      <div class="badge-link-text">View Credential →</div>
     </a>
 
   </div>
