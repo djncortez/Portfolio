@@ -83,7 +83,8 @@
   .project-card:hover .project-thumb img { transform: scale(1.04); opacity: 1; }
   .project-thumb::after { content: 'View project \2192'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(10,14,23,0.72); color: var(--accent); font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: opacity 0.2s ease; }
   .project-card:hover .project-thumb::after, .project-card:focus-visible .project-thumb::after { opacity: 1; }
-  .project-thumb-ready img { object-position: center top; }
+  .project-thumb-ready { background: #f8f7ff; }
+  .project-thumb-ready img { object-position: center 32%; }
   .project-thumb-void { background: linear-gradient(135deg, #0d1117, #1a0533); }
   .project-thumb-flight { background: linear-gradient(135deg, #0a1628, #0d2a4a); }
   .project-thumb svg { opacity: 0.4; position: relative; z-index: 1; }
