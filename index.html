@@ -145,6 +145,10 @@
   }
   .exp-report-link:hover { border-color: var(--accent); }
   .exp-desc { color: var(--text); font-size: 0.8rem; line-height: 1.85; margin-bottom: 2rem; opacity: 0.9; }
+  .exp-impact { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 0 0 2.5rem; }
+  .exp-impact-item { padding: 1.1rem; border: 1px solid var(--border); border-radius: 6px; background: rgba(0,212,255,0.04); }
+  .exp-impact-label { display: block; margin-bottom: 0.55rem; color: var(--accent); font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; }
+  .exp-impact-item p { color: var(--muted); font-size: 0.7rem; line-height: 1.65; }
   .exp-columns { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
   .exp-sublabel { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
   .exp-sublabel::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; }
@@ -240,6 +244,7 @@
     .avatar-frame { width: 220px; height: 220px; }
     .exp-columns { grid-template-columns: 1fr; }
     .exp-screens { grid-template-columns: 1fr; }
+    .exp-impact { grid-template-columns: 1fr; }
     .exp-meta { text-align: left; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -346,14 +351,26 @@
     </div>
 
     <p class="exp-desc">
-      Completing an on-the-job training practicum at STMicroelectronics, a global semiconductor
-      manufacturer, where I was assigned to the B2F2 Operations 2/3 department. My core assignment
-      was designing and building the <strong style="color:var(--text)">MBO Sawing Report System</strong> &mdash;
-      an internal web application that digitizes the department's MBO sawing report process,
-      replacing a manual, Excel-based workflow with a structured, validated, and centrally
-      managed reporting platform. I worked across the full stack: frontend, backend, database,
-      testing, documentation, and the deployment presentation to the department.
+      During a 480-hour onsite practicum in B2F2 Operations 2/3, I designed and built the
+      <strong style="color:var(--text)">MBO Sawing Report System</strong> &mdash; an internal web application
+      that digitizes the department's MBO sawing-report process. I contributed across the full stack:
+      frontend, backend, database, testing, documentation, and a deployment presentation to stakeholders.
     </p>
+
+    <div class="exp-impact" aria-label="MBO Sawing Report System case study summary">
+      <div class="exp-impact-item">
+        <span class="exp-impact-label">Challenge</span>
+        <p>Manual Excel reporting depended on file handling and individual practices, making validation, retrieval, and workflow consistency difficult.</p>
+      </div>
+      <div class="exp-impact-item">
+        <span class="exp-impact-label">Solution</span>
+        <p>Translated the worksheet logic into a login-protected, workflow-based application with guided forms, validation, and admin-managed configuration.</p>
+      </div>
+      <div class="exp-impact-item">
+        <span class="exp-impact-label">Impact</span>
+        <p>Created a centralized way to save and retrieve reports, standardize report preparation, and reduce dependence on isolated local files.</p>
+      </div>
+    </div>
 
     <div class="exp-columns">
       <div>
