@@ -1,0 +1,7 @@
+# Source renders and pre-optimisation image originals. Kept locally so assets can
+# be re-encoded, but far too large to version (~18MB).
+_image-originals/
+_object-originals/
+
+# Snapshots taken before each design-system rewrite
+*.bak
