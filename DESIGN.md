@@ -163,8 +163,17 @@ Scrolling is native — Lenis was tried and removed.
 6. **Marquee** — CSS keyframe on a doubled track, built in JS so the halves cannot
    drift out of sync.
 7. **Cursor** — GSAP `quickTo`, swells and turns green over interactive elements.
-8. **Ink loop** — the generated video now backs the **contact** section only, at 42%
-   under a heavy scrim. The objects carry the hero; a video there fought them.
+8. **Ink loop** — the generated video backs the **contact** section only, at 42% under
+   a scrim. The objects carry the hero; a video there fought them. It runs on mobile
+   too: video decode is hardware-accelerated, so unlike the parallax and cursor it is
+   cheap on a phone. The real mobile cost is the ~1MB download, so it is gated on
+   `Save-Data` and connection type rather than pointer type.
+
+   Text over it needs its own tone. The page's `--muted` measures only **2.33:1**
+   against the brightest video frame — a real AA failure, worst on mobile where the
+   text spans 95% of the width into the weakest part of the scrim. `.contact` uses
+   `#cfcfc0` instead (**4.90:1**, still 1.5x dimmer than cream). Dimming the video to
+   rescue `--muted` would have required ~25/255, i.e. invisible.
 
 **Rules**
 - **No hidden state in CSS.** Every offset and opacity is applied by GSAP at runtime,

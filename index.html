@@ -283,6 +283,16 @@
       rgba(14,16,15,.66) 68%, rgba(14,16,15,.34) 88%, rgba(14,16,15,.2) 100%);
   }
   .contact .shell { position:relative; z-index:1; }
+  /* The ink loop lifts the background well above the flat canvas, where the
+     page's --muted (#8e8e82) measures only 2.33:1 — a real AA failure, and
+     worst on mobile where the text spans 95% of the width into the weakest
+     part of the scrim. #cfcfc0 measures 4.90:1 against the brightest frame
+     anywhere in the text zone, while staying 1.5x dimmer than cream so the
+     hierarchy still reads. Dimming the video instead would have needed it at
+     ~25/255, i.e. invisible. */
+  .contact .muted,
+  .contact .anno,
+  .contact .contact-item span:last-child { color:#cfcfc0; }
   .contact-links { display:flex; flex-direction:column; margin-top:clamp(40px,5vw,64px); }
   .contact-item {
     display:flex; justify-content:space-between; align-items:center; gap:24px;
@@ -750,8 +760,15 @@
   });
 
   /* ink loop behind the contact block — one cinematic moment, and the only
-     place a video appears now that the objects carry the hero */
-  if (!reduce && !lowPower) {
+     place a video appears now that the objects carry the hero.
+
+     Deliberately NOT behind lowPower. Video decode is hardware-accelerated, so
+     it is cheap even on a phone — unlike the parallax and cursor, which do
+     main-thread work. The real mobile cost is the ~1MB download, so the gate is
+     Save-Data and connection speed instead of pointer type. */
+  var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+  var thrifty = conn.saveData === true || /(^|-)2g$/.test(conn.effectiveType || '');
+  if (!reduce && !thrifty) {
     var mountVideo = function () {
       var wrap = document.querySelector('.contact-bg');
       if (!wrap) return;
