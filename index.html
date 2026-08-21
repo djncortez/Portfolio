@@ -19,7 +19,8 @@
 <meta name="twitter:image" content="https://djncortez.netlify.app/assets/og-card.jpg">
 <link rel="canonical" href="https://djncortez.netlify.app/">
 <meta name="theme-color" content="#0e100f">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230e100f'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Helvetica,Arial' font-size='24' font-weight='600' fill='%23fffce1'%3EDJC%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
@@ -110,8 +111,15 @@
     background:linear-gradient(to bottom, rgba(14,16,15,.92), rgba(14,16,15,0));
   }
   nav a, nav button { pointer-events:auto; }
-  .nav-logo { font-size:17px; font-weight:600; letter-spacing:-.01em; }
-  .nav-logo span { color:var(--green); }
+  .nav-logo {
+    display:inline-flex; align-items:center; gap:9px;
+    font-size:17px; font-weight:600; letter-spacing:-.01em;
+  }
+  /* 26px, not smaller: the mark has internal counters between the braces
+     and the dot, and they close up below about 24px. */
+  .nav-mark { width:26px; height:26px; flex:none; display:block; }
+  /* scoped to .dot — a bare `span` would now also catch the wordmark wrapper */
+  .nav-logo .dot { color:var(--green); }
   .nav-links { display:flex; gap:22px; list-style:none; }
   .nav-links a {
     font-size:16px; line-height:1.15; color:var(--cream);
@@ -390,7 +398,7 @@
 <div class="cursor" aria-hidden="true"></div>
 
 <nav>
-  <a class="nav-logo" href="#top">Cortez<span>.</span></a>
+  <a class="nav-logo" href="#top" aria-label="David Joseph Cortez — home"><svg class="nav-mark" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><defs><path id="nav-brace" d="M 58 30 C 49 30, 46 32, 46 42 L 46 52 C 46 59, 43 61, 34 64 C 43 67, 46 69, 46 76 L 46 86 C 46 96, 49 98, 58 98"/></defs><g fill="none" stroke="#0ae448" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><use href="#nav-brace"/><use href="#nav-brace" transform="translate(128,0) scale(-1,1)"/></g><circle cx="64" cy="64" r="8" fill="#0ae448"/></svg><span>Cortez<span class="dot">.</span></span></a>
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">Menu</button>
   <ul class="nav-links" id="primary-navigation">
     <li><a href="#about">About</a></li>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Cortez mark">
+  <title>Cortez mark</title>
+  <!-- One brace, drawn once and mirrored, so the halves are exact reflections.
+       Stroked rather than filled so the weight cannot drift between the stem
+       and the arms. The nib at x=34 is a pinch, not a protrusion: any deeper
+       and the round linecap reads as a lollipop; any shallower and the brace
+       character disappears. -->
+  <defs>
+    <path id="cortez-brace"
+          d="M 58 30
+             C 49 30, 46 32, 46 42
+             L 46 52
+             C 46 59, 43 61, 34 64
+             C 43 67, 46 69, 46 76
+             L 46 86
+             C 46 96, 49 98, 58 98"/>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="11"
+     stroke-linecap="round" stroke-linejoin="round">
+    <use href="#cortez-brace"/>
+    <use href="#cortez-brace" transform="translate(128,0) scale(-1,1)"/>
+  </g>
+  <circle cx="64" cy="64" r="8" fill="currentColor"/>
+</svg>
