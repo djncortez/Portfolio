@@ -1,21 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- Heavier stroke and less padding than the primary mark: a favicon has to
-       hold at 16px, where the primary's proportions go mushy. -->
+  <!-- Heavier stroke, larger radius and only two dots: at 16px the primary's
+       third dot is below a pixel and the thinner stroke closes up. -->
   <rect width="128" height="128" rx="26" fill="#0e100f"/>
-  <defs>
-    <path id="f"
-          d="M 56 26
-             C 46 26, 42 29, 42 40
-             L 42 52
-             C 42 60, 39 62, 28 64
-             C 39 66, 42 68, 42 76
-             L 42 88
-             C 42 99, 46 102, 56 102"/>
-  </defs>
-  <g fill="none" stroke="#0ae448" stroke-width="14"
-     stroke-linecap="round" stroke-linejoin="round">
-    <use href="#f"/>
-    <use href="#f" transform="translate(128,0) scale(-1,1)"/>
-  </g>
-  <circle cx="64" cy="64" r="10" fill="#0ae448"/>
+  <path d="M 89.71 94.64 A 40 40 0 1 1 51.64 25.96"
+        fill="none" stroke="#0ae448" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="65.40" cy="24.02" r="6" fill="#0ae448"/>
+  <circle cx="79.63" cy="27.18" r="4" fill="#0ae448"/>
 </svg>

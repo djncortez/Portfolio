@@ -141,7 +141,34 @@ Sources kept outside the deploy folder in `_object-originals/`.
 
 ---
 
-## 5. Motion
+## 5. The mark
+
+A **"C" that resolves out of three shrinking points.** The letter is the initial —
+the wordmark is `Cortez.`, so C is the brand letter. The dissolve is the positioning:
+scattered observations becoming a signal you can decide from.
+
+| File | Use |
+|---|---|
+| `assets/logo/mark.svg` | Primary, `#0ae448` |
+| `assets/logo/mark-mono.svg` | `currentColor`, inherits its surroundings |
+| `assets/logo/favicon.svg` | Heavier stroke, larger radius, two dots, on its own tile |
+| `assets/logo/apple-touch-icon.png` | 180px, full-bleed — iOS masks its own corners |
+
+Construction: arc sweeps 50 to 252 degrees. That is 202, so `large-arc-flag` is 1 —
+verified by rendering a 102-point polyline of the same circle and diffing (0.24%
+mismatch, all antialiasing). Dots shrink by 0.68 each step; **the size gradient is
+load-bearing**, because uniform segments read as a loading spinner. Nav lockup is 26px
+— below ~22px the smallest dot falls under a pixel and the dissolve reads as fringe.
+
+**The device does not transfer to other letters.** It works on the C because the open
+terminal lets the dots continue the letter's own arc inside its optical box. Seven D
+variants were drawn and all failed: dots below the baseline read as a lowercase "p",
+dots at the stem are invisible, and a sampled bowl is too subtle at any real size. If a
+second letter is ever needed it requires a different gesture, not this one.
+
+---
+
+## 6. Motion
 
 | Token | Value |
 |---|---|
@@ -188,7 +215,7 @@ Scrolling is native — Lenis was tried and removed.
 
 ---
 
-## 6. Performance
+## 7. Performance
 
 Carried forward from v2, still enforced:
 
@@ -208,7 +235,7 @@ Re-encoding needs ffmpeg via `pip install imageio-ffmpeg` (self-contained, not o
 
 ---
 
-## 7. Don'ts
+## 8. Don'ts
 
 - Never use `#ffffff` or `#000000`; the warm cream and warm off-black are the system.
 - Never add a filled CTA — outlined only; the gradient stroke is the maximum escalation.

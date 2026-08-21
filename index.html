@@ -115,8 +115,8 @@
     display:inline-flex; align-items:center; gap:9px;
     font-size:17px; font-weight:600; letter-spacing:-.01em;
   }
-  /* 26px, not smaller: the mark has internal counters between the braces
-     and the dot, and they close up below about 24px. */
+  /* 26px keeps the three trailing dots distinct; below ~22px the
+     smallest falls under a pixel and the dissolve reads as fringe. */
   .nav-mark { width:26px; height:26px; flex:none; display:block; }
   /* scoped to .dot — a bare `span` would now also catch the wordmark wrapper */
   .nav-logo .dot { color:var(--green); }
@@ -398,7 +398,7 @@
 <div class="cursor" aria-hidden="true"></div>
 
 <nav>
-  <a class="nav-logo" href="#top" aria-label="David Joseph Cortez — home"><svg class="nav-mark" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><defs><path id="nav-brace" d="M 58 30 C 49 30, 46 32, 46 42 L 46 52 C 46 59, 43 61, 34 64 C 43 67, 46 69, 46 76 L 46 86 C 46 96, 49 98, 58 98"/></defs><g fill="none" stroke="#0ae448" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><use href="#nav-brace"/><use href="#nav-brace" transform="translate(128,0) scale(-1,1)"/></g><circle cx="64" cy="64" r="8" fill="#0ae448"/></svg><span>Cortez<span class="dot">.</span></span></a>
+  <a class="nav-logo" href="#top" aria-label="David Joseph Cortez — home"><svg class="nav-mark" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><path d="M 88.43 93.11 A 38 38 0 1 1 52.26 27.86" fill="none" stroke="#0ae448" stroke-width="12" stroke-linecap="round"/><circle cx="64.66" cy="26.01" r="4.08" fill="#0ae448"/><circle cx="77.00" cy="28.29" r="2.77" fill="#0ae448"/><circle cx="87.91" cy="34.47" r="1.89" fill="#0ae448"/></svg><span>Cortez<span class="dot">.</span></span></a>
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">Menu</button>
   <ul class="nav-links" id="primary-navigation">
     <li><a href="#about">About</a></li>
