@@ -149,10 +149,10 @@ scattered observations becoming a signal you can decide from.
 
 | File | Use |
 |---|---|
-| `assets/logo/mark.svg` | Primary, `#0ae448` |
-| `assets/logo/mark-mono.svg` | `currentColor`, inherits its surroundings |
-| `assets/logo/favicon.svg` | Heavier stroke, larger radius, two dots, on its own tile |
-| `assets/logo/apple-touch-icon.png` | 180px, full-bleed — iOS masks its own corners |
+| `web/public/assets/logo/mark.svg` | Primary, `#0ae448` |
+| `web/public/assets/logo/mark-mono.svg` | `currentColor`, inherits its surroundings |
+| `web/public/assets/logo/favicon.svg` | Heavier stroke, larger radius, two dots, on its own tile |
+| `web/public/assets/logo/apple-touch-icon.png` | 180px, full-bleed — iOS masks its own corners |
 
 Construction: arc sweeps 50 to 252 degrees. That is 202, so `large-arc-flag` is 1 —
 verified by rendering a 102-point polyline of the same circle and diffing (0.24%
