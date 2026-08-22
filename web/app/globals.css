@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+/* ==========================================================
+   Design System v3.0 — "Animated chalkboard in a design studio"
+   After GSAP (gsap.com). Tokens and rules: ../DESIGN.md
+   Tailwind v4 is CSS-first, so the system lives here as @theme
+   tokens and is consumed as utilities (bg-canvas, text-cream…).
+   ========================================================== */
+@theme {
+  /* Warmth is load-bearing. Never #ffffff, never #000000. */
+  --color-canvas: #0e100f;
+  --color-panel: #191919;
+  --color-cream: #fffce1;
+  /* The reference specifies #7c7c6f, which measures 4.52:1 on this canvas —
+     clearing 4.5 by 0.02 while carrying most of the body copy. Lifted for a
+     real margin (5.8:1), still 3.2x dimmer than cream. */
+  --color-muted: #8e8e82;
+  --color-hair: #42433d;
+  /* Over the contact video the page --muted measures only 2.33:1. */
+  --color-onvideo: #cfcfc0;
+
+  /* Colour is taxonomy, never decoration. One hue per discipline. */
+  --color-brand: #0ae448;
+  --color-brand-lt: #abff84;
+  --color-data: #ff8709;
+  --color-systems: #00bae2;
+  --color-datasys: #9d95ff;
+  --color-tooling: #fec5fb;
+
+  /* radius jumps 8px -> 100px. Nothing between. */
+  --radius-card: 8px;
+  --radius-pill: 100px;
+
+  --ease-cam: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-cream);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* height:auto is load-bearing: width/height attributes are presentational
+   hints, so setting only width in CSS leaves the attribute height in force
+   and the image scales non-uniformly. */
+img { max-width: 100%; display: block; height: auto; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--color-brand); color: var(--color-canvas); }
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 4px; }
+
+/* The mask must be taller than the line box or it clips descenders: ink runs
+   ~1.20em against a line-height:1 box. Extended down, pulled back with a
+   negative margin so layout is untouched. */
+.line-mask { display: block; overflow: hidden; padding-bottom: .22em; margin-bottom: -.22em; }
+
+/* Words are atomic. Without this every character is a break opportunity and a
+   line one pixel too wide breaks mid-word ("Josep / h"). */
+.char-word { display: inline-block; white-space: nowrap; }
+.char-mask {
+  display: inline-block; overflow: hidden; vertical-align: bottom;
+  padding: .20em 0; margin: -.20em 0;
+}
+
+/* 'David Joseph' measures 5.90em, so 16.95cqw is the exact fit point.
+   15.5cqw leaves ~9% headroom for font-metric variation between browsers. */
+.hero-container { container-type: inline-size; }
+.t-display { font-size: clamp(44px, 15.5cqw, 210px); line-height: .9; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
