@@ -142,7 +142,7 @@ export function Hero() {
           </p>
         </Reveal>
 
-        <h1 className="t-display relative z-2 font-semibold uppercase tracking-[-0.02em]">
+        <h1 className="t-display relative z-2 font-semibold tracking-[-0.02em]">
           <SplitChars text={HERO.given} className="block" />
           <SplitChars text={HERO.family} className="block text-brand" />
         </h1>
@@ -459,10 +459,22 @@ export function Contact() {
     if (conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? "")) return;
     const v = ref.current;
     if (!v) return;
-    const onCanPlay = () => { setReady(true); v.play().catch(() => {}); };
-    v.addEventListener("canplay", onCanPlay, { once: true });
-    v.load();
-    return () => v.removeEventListener("canplay", onCanPlay);
+    // Two traps here, both hit in testing:
+    // 1. play() is what actually starts the fetch — with preload="none" a bare
+    //    load() never buffers, so a "canplay" listener never fires at all.
+    // 2. The data can already be there by the time this effect runs, so the
+    //    event would have fired before we subscribed. Check readyState first.
+    // Visibility is deliberately not tied to playback: if autoplay is blocked
+    // the frame should still show, the way the static build's plain CSS did.
+    const onReady = () => setReady(true);
+    if (v.readyState >= 2) setReady(true);
+    v.addEventListener("loadeddata", onReady);
+    v.addEventListener("playing", onReady);
+    v.play().catch(() => {});
+    return () => {
+      v.removeEventListener("playing", onReady);
+      v.removeEventListener("loadeddata", onReady);
+    };
   }, [reduce]);
 
   return (
