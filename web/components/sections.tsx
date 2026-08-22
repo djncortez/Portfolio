@@ -11,7 +11,7 @@ import { motion, useReducedMotion } from "motion/react";
 import {
   NAV, HERO, ABOUT, MARQUEE, DISCIPLINES, EXPERIENCE, WORK, CREDENTIALS, CONTACT, HUE,
 } from "@/lib/content";
-import { Reveal, SplitLines, SplitChars, Drift, WipeIn } from "./motion";
+import { Reveal, SplitLines, SplitChars, Drift, HeroDrift, WipeIn } from "./motion";
 
 const shell = "mx-auto w-full max-w-[1280px] px-5 md:px-8";
 const section = "py-[clamp(80px,10vw,140px)]";
@@ -132,8 +132,9 @@ export function Nav() {
 /* ---------------- hero ---------------- */
 
 export function Hero() {
+  const heroRef = useRef<HTMLElement>(null);
   return (
-    <header id="top"
+    <header id="top" ref={heroRef}
             className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[110px] pb-[70px] md:pt-[140px] md:pb-[90px]">
       <div className={`${shell} hero-container relative`}>
         <Reveal y={16} delay={0.1}>
@@ -147,14 +148,23 @@ export function Hero() {
           <SplitChars text={HERO.family} className="block text-brand" />
         </h1>
 
-        {/* bleeds past the container rather than sitting inside it */}
-        <motion.img
-          src="/assets/objects/hero-knot.webp" alt="" aria-hidden
-          initial={{ opacity: 0, scale: 0.86, rotate: -12 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ duration: 1.6, ease: [0.19, 1, 0.22, 1], delay: 0.45 }}
-          className="pointer-events-none absolute right-[-8%] bottom-[6%] z-1 w-[clamp(180px,52vw,300px)] md:top-[44%] md:right-[-4%] md:bottom-auto md:w-[clamp(260px,34vw,520px)] md:-translate-y-[42%]"
-        />
+        {/* Bleeds past the container rather than sitting inside it. Split in
+            two because the entrance and the scroll drift both want `transform`
+            on the same node and would overwrite each other: HeroDrift owns the
+            scroll transform, the img keeps its own entrance. Positioning sits
+            on the outer div, where Tailwind's `md:-translate-y-[42%]` compiles
+            to the standalone `translate` property and so composes with both. */}
+        <div className="pointer-events-none absolute right-[-8%] bottom-[6%] z-1 w-[clamp(180px,52vw,300px)] md:top-[44%] md:right-[-4%] md:bottom-auto md:w-[clamp(260px,34vw,520px)] md:-translate-y-[42%]">
+          <HeroDrift containerRef={heroRef}>
+            <motion.img
+              src="/assets/objects/hero-knot.webp" alt="" aria-hidden
+              initial={{ opacity: 0, scale: 0.86, rotate: -12 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ duration: 1.6, ease: [0.19, 1, 0.22, 1], delay: 0.45 }}
+              className="w-full"
+            />
+          </HeroDrift>
+        </div>
 
         <Reveal delay={0.72}>
           <p className="relative z-2 mt-10 max-w-[30em] text-[19px] text-muted">

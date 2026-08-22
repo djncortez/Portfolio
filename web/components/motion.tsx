@@ -15,10 +15,21 @@
  *    depend on an IntersectionObserver entry arriving. See `useRevealed`.
  */
 
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import { motion, useScroll, useSpring, useTransform, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 
 const EASE = [0.19, 1, 0.22, 1] as const;
+
+/**
+ * Stands in for GSAP's `scrub: 0.6`.
+ *
+ * ScrollTrigger's scrub eases the playhead toward the scroll position over
+ * ~0.6s rather than pinning to it, and that lag is most of what made the
+ * objects read as drifting. Mapping scroll straight onto a transform is
+ * technically the same travel but feels rigid — the motion stops looking like
+ * motion. Overdamped so it trails and settles without overshooting.
+ */
+const SCRUB = { stiffness: 120, damping: 30, restDelta: 0.0005 } as const;
 
 /**
  * Reveal gate: an IntersectionObserver plus a fallback sweep.
@@ -181,9 +192,12 @@ export function SplitChars({ text, className }: { text: string; className?: stri
 }
 
 /**
- * Scroll-driven drift. Replaces GSAP ScrollTrigger `scrub` with useScroll +
- * useTransform — same idea, mapping scroll progress across the element onto a
- * transform. Transform-only, so the compositor owns it.
+ * Scroll-driven drift for the discipline and work objects. Replaces GSAP
+ * ScrollTrigger scrub with useScroll + useSpring + useTransform.
+ *
+ * Travel matches the static build exactly: yPercent 9 -> -9 and rotate -5 -> 5,
+ * flipped per object, across `top bottom` -> `bottom top`. Transform-only, so
+ * the compositor owns it.
  */
 export function Drift({
   children, dir = 1, className,
@@ -191,12 +205,38 @@ export function Drift({
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [`${9 * dir}%`, `${-9 * dir}%`]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [-5 * dir, 5 * dir]);
+  const p = useSpring(scrollYProgress, SCRUB);
+  const y = useTransform(p, [0, 1], [`${9 * dir}%`, `${-9 * dir}%`]);
+  const rotate = useTransform(p, [0, 1], [-5 * dir, 5 * dir]);
   return (
     <div ref={ref} className={className}>
       <motion.div style={reduce ? undefined : { y, rotate }}>{children}</motion.div>
     </div>
+  );
+}
+
+/**
+ * The hero knot's drift, which is a different move from the others: it tracks
+ * the HERO SECTION rather than itself, running from the top of the page until
+ * the hero has scrolled fully past, and it drifts one way only (0 -> 14%,
+ * 0 -> 8deg) instead of passing through centre.
+ *
+ * It renders its own layer so the caller can keep static positioning — and any
+ * Tailwind translate — on an outer element. Motion writes `transform`, so a
+ * utility class like `-translate-y-[42%]` on the same node would be clobbered.
+ */
+export function HeroDrift({
+  containerRef, children, className,
+}: { containerRef: RefObject<HTMLElement | null>; children: ReactNode; className?: string }) {
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
+  const p = useSpring(scrollYProgress, SCRUB);
+  const y = useTransform(p, [0, 1], ["0%", "14%"]);
+  const rotate = useTransform(p, [0, 1], [0, 8]);
+  return (
+    <motion.div className={className} style={reduce ? undefined : { y, rotate }}>
+      {children}
+    </motion.div>
   );
 }
 
