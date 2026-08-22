@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Not a built-in Tailwind v4 variant. Without this, `pointer-fine:` silently
+   compiles to nothing and anything gated on it stays hidden forever. */
+@custom-variant pointer-fine (@media (hover: hover) and (pointer: fine));
+
+
 /* ==========================================================
    Design System v3.0 — "Animated chalkboard in a design studio"
    After GSAP (gsap.com). Tokens and rules: ../DESIGN.md
@@ -81,5 +86,38 @@ a { color: inherit; text-decoration: none; }
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Travelling light on the primary CTA's outline.
+   @property is what makes an angle interpolate at all — without it the custom
+   property is a string and the gradient would jump rather than sweep. Falls back
+   to a static stroke where @property is unsupported. */
+@property --ring-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.cta-ring {
+  background: conic-gradient(
+    from var(--ring-angle),
+    var(--color-brand) 0deg,
+    var(--color-brand-lt) 90deg,
+    var(--color-brand) 180deg,
+    var(--color-brand-lt) 270deg,
+    var(--color-brand) 360deg
+  );
+  animation: cta-ring-spin 6s linear infinite;
+}
+
+@keyframes cta-ring-spin {
+  to { --ring-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-ring {
+    animation: none;
+    background: linear-gradient(114deg, var(--color-brand) 20%, var(--color-brand-lt) 66%);
   }
 }

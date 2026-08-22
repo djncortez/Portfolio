@@ -12,6 +12,7 @@ import {
   NAV, HERO, ABOUT, MARQUEE, DISCIPLINES, EXPERIENCE, WORK, CREDENTIALS, CONTACT, HUE,
 } from "@/lib/content";
 import { Reveal, SplitLines, SplitChars, Drift, HeroDrift, WipeIn } from "./motion";
+import { Lens, Compare, StickyReveal } from "./interactive";
 
 const shell = "mx-auto w-full max-w-[1280px] px-5 md:px-8";
 const section = "py-[clamp(80px,10vw,140px)]";
@@ -40,12 +41,14 @@ function Pill({
   if (gradient) {
     return (
       <a href={href} {...ext} className={`${base} relative text-cream hover:text-brand-lt`}>
-        {/* gradient stroke via mask — still no fill, per the system */}
+        {/* Gradient stroke via mask — still no fill, per the system. The conic
+            angle animates, so the light travels the outline: an animated form of
+            the one chromatic escalation DESIGN.md already permits. Repaint is
+            confined to a ~200x54 rim and stops under reduced motion. */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-[100px] p-[1.5px]"
+          className="cta-ring pointer-events-none absolute inset-0 rounded-[100px] p-[1.5px]"
           style={{
-            background: "linear-gradient(114deg, var(--color-brand) 20%, var(--color-brand-lt) 66%)",
             WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
             WebkitMaskComposite: "xor",
             maskComposite: "exclude",
@@ -323,41 +326,66 @@ export function Experience() {
           </div>
         </Reveal>
 
-        <div className="mt-[clamp(44px,6vw,72px)] grid gap-[clamp(32px,6vw,72px)] lg:grid-cols-[1.3fr_0.7fr]">
-          <Reveal>
-            <Anno>key contributions</Anno>
-            <ul>
-              {e.contributions.map(([k, v], i) => (
-                <li key={k}
-                    className={`border-b border-hair py-4 text-[16px] text-muted ${i === 0 ? "border-t" : ""}`}>
-                  <b className="font-semibold text-cream">{k}</b> — {v}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal>
-            <Anno>stack</Anno>
-            <div className="flex flex-wrap gap-2">{e.stack.map((t) => <Tag key={t}>{t}</Tag>)}</div>
-            <div className="mt-8"><Anno>public-safe overview</Anno></div>
-            <p className="text-[16px] text-muted">{e.confidential}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {e.flow.map((f) => (
-                <span key={f}
-                      className="rounded-[100px] border border-hair px-4 py-2.5 text-[15px] leading-[1.15] text-muted">
-                  {f}
-                </span>
-              ))}
-            </div>
-          </Reveal>
+        {/* The seven contributions carry the substance of this project, and as a
+            flat list nobody read them. Full width so the pinned panel has room. */}
+        <div className="mt-[clamp(44px,6vw,72px)]">
+          <StickyReveal items={e.contributions} eyebrow={<Anno>key contributions</Anno>} />
         </div>
+
+        <Reveal>
+          <div className="mt-[clamp(44px,6vw,72px)] grid gap-[clamp(32px,6vw,72px)] lg:grid-cols-2">
+            <div>
+              <Anno>stack</Anno>
+              <div className="flex flex-wrap gap-2">{e.stack.map((t) => <Tag key={t}>{t}</Tag>)}</div>
+            </div>
+            <div>
+              <Anno>public-safe overview</Anno>
+              <p className="text-[16px] text-muted">{e.confidential}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {e.flow.map((f) => (
+                  <span key={f}
+                        className="rounded-[100px] border border-hair px-4 py-2.5 text-[15px] leading-[1.15] text-muted">
+                    {f}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Shows the transformation instead of describing it. The left frame is
+            a GENERIC ILLUSTRATION with invented lot numbers, not a capture of
+            anything internal — the caption says so, and it must keep saying so. */}
+        <Reveal>
+          <div className="mt-[clamp(44px,6vw,72px)]">
+            <Anno>what changed</Anno>
+            <Compare
+              before="/assets/mbo-before-worksheet.jpg"
+              after="/assets/mbo-dashboard.jpg"
+              beforeAlt="Illustration of a manual spreadsheet workflow: missing cells, ad-hoc remarks and duplicated sheet tabs"
+              afterAlt="MBO Sawing Report System workflow dashboard"
+              beforeLabel="Spreadsheet"
+              afterLabel="The system"
+            />
+            <p className="mt-3.5 text-[15px] leading-[1.4] text-muted">
+              Drag to compare. The spreadsheet frame is an illustration with invented
+              data — actual worksheets, operational data and workflows remain confidential.
+            </p>
+          </div>
+        </Reveal>
 
         <Reveal>
           <div className="mt-[clamp(44px,6vw,72px)] grid gap-4 md:grid-cols-2">
             {e.shots.map((s) => (
-              <figure key={s.src} className="overflow-hidden rounded-[8px] bg-panel">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={s.src} alt={s.alt} loading="lazy" className="w-full" />
-                <figcaption className="px-5 py-4 text-[15px] leading-[1.4] text-muted">{s.caption}</figcaption>
+              <figure key={s.src}>
+                <Lens src={s.src} alt={s.alt} />
+                {/* muted, not hair: hair is 1.9:1 and the system reserves it for
+                    hairlines. Hidden without a fine pointer, where it would be
+                    instructing the reader to do something they cannot do. */}
+                <figcaption className="px-1 pt-4 text-[15px] leading-[1.4] text-muted">
+                  {s.caption}
+                  <span className="ml-1.5 hidden pointer-fine:inline">— hover to magnify</span>
+                </figcaption>
               </figure>
             ))}
           </div>
