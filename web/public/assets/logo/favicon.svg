@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Heavier stroke, larger radius and only two dots: at 16px the primary's
+       third dot is below a pixel and the thinner stroke closes up. -->
+  <rect width="128" height="128" rx="26" fill="#0e100f"/>
+  <path d="M 89.71 94.64 A 40 40 0 1 1 51.64 25.96"
+        fill="none" stroke="#0ae448" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="65.40" cy="24.02" r="6" fill="#0ae448"/>
+  <circle cx="79.63" cy="27.18" r="4" fill="#0ae448"/>
+</svg>

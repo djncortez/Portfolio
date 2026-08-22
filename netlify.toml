@@ -1,0 +1,9 @@
+# Next.js static export. No server runtime — Netlify serves plain files, the
+# same deploy model as the previous hand-written build.
+[build]
+  base    = "web"
+  command = "npm run build"
+  publish = "web/out"
+
+[build.environment]
+  NODE_VERSION = "22"
