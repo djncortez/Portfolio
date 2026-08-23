@@ -17,6 +17,8 @@ import {
 } from "./interactive";
 
 const shell = "mx-auto w-full max-w-[1280px] px-5 md:px-8";
+/** Pin angles for the credentials board. Fixed, not random — see Credentials. */
+const PIN = [-1.4, 0.9, -0.6, 1.2, -1.1, 0.5];
 const section = "py-[clamp(80px,10vw,140px)]";
 
 /** The recurring signature: every section opens with one. */
@@ -131,6 +133,36 @@ function Obj({ name }: { name: string }) {
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string | null>(null);
+
+  /**
+   * Which section you are in, over a 13,500px document with six nav links and
+   * previously no indication at all.
+   *
+   * The rootMargin collapses the viewport to a thin band across its middle, so
+   * "current" means the section crossing that line — one observer, no scroll
+   * listener, and no measurement on the fixed nav, which is where this project's
+   * compositing problems have twice come from.
+   *
+   * A missed entry degrades to no dot rather than to a wrong one, and the hero
+   * is deliberately unrepresented: it is not in NAV, so nothing is marked until
+   * you reach About.
+   */
+  useEffect(() => {
+    const els = NAV
+      .map((n) => document.getElementById(n.href.slice(1)))
+      .filter((el): el is HTMLElement => !!el);
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(`#${e.target.id}`);
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
     <nav className="pointer-events-none fixed inset-x-0 top-0 z-100 h-[72px] bg-linear-to-b from-canvas/90 to-transparent">
       <div className="flex h-full items-center justify-between px-5 md:px-8">
@@ -154,8 +186,19 @@ export function Nav() {
           {NAV.map((n) => (
             <li key={n.href}>
               <a href={n.href}
-                 className="text-[16px] leading-[1.15] text-cream transition-colors duration-300 hover:text-brand">
+                 aria-current={active === n.href ? "true" : undefined}
+                 className="relative text-[16px] leading-[1.15] text-cream transition-colors duration-300 hover:text-brand">
                 {n.label}
+                {/* A dot, not an underline or a colour change: the mark is a C
+                    built from dots and the wordmark ends in one, so the page
+                    already has a vocabulary for "you are here". Colour is
+                    reserved for taxonomy, and hover already owns brand green.
+                    scale/translate compile to their own properties in Tailwind
+                    v4, so the two compose instead of overwriting each other. */}
+                <span aria-hidden
+                      className={`absolute -bottom-[9px] left-1/2 size-[5px] -translate-x-1/2 rounded-[100px] bg-brand transition-[opacity,scale] duration-300 ${
+                        active === n.href ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                      }`} />
               </a>
             </li>
           ))}
@@ -173,7 +216,11 @@ export function Nav() {
             className="pointer-events-auto absolute inset-x-0 top-[72px] bg-panel px-5 pb-6 md:hidden">
           {NAV.map((n) => (
             <li key={n.href} className="border-t border-hair">
-              <a href={n.href} onClick={() => setOpen(false)} className="block py-4 text-[18px]">{n.label}</a>
+              <a href={n.href} onClick={() => setOpen(false)}
+                 aria-current={active === n.href ? "true" : undefined}
+                 className={`block py-4 text-[18px] ${active === n.href ? "text-brand" : ""}`}>
+                {n.label}
+              </a>
             </li>
           ))}
         </ul>
@@ -265,7 +312,7 @@ export function Hero() {
 
 export function About() {
   return (
-    <section id="about" className={section}>
+    <section id="about" className={`${section} overflow-x-clip`}>
       <div className={shell}>
         <Reveal><Anno n="01">about</Anno></Reveal>
         <div className="grid items-start gap-[clamp(32px,6vw,80px)] lg:grid-cols-[1.1fr_0.9fr]">
@@ -285,10 +332,24 @@ export function About() {
             </Reveal>
           </div>
           <Reveal>
-            <figure className="max-w-[380px] overflow-hidden rounded-[8px] bg-panel lg:max-w-none">
+            {/* This was the only image on the page sitting neatly inside its box,
+                which DESIGN.md names as the one thing that kills the object
+                layer. It now runs past the shell edge the way the hero knot
+                does; the section clips the overflow rather than scrolling it.
+                Not an object overlapping it: all eight objects already carry an
+                assigned meaning (four disciplines, three projects, him), and
+                borrowing one here would spend a taxonomy slot on decoration. */}
+            <figure className="relative max-w-[380px] overflow-hidden rounded-[8px] bg-panel lg:max-w-none lg:-mr-[clamp(32px,8vw,140px)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/assets/portrait.jpg" alt="David Joseph Cortez"
                    className="aspect-3/4 w-full object-cover object-[center_18%]" />
+              {/* The studio blue is the largest off-taxonomy colour area on the
+                  page. The system forbids desaturating photography, so instead
+                  the lower edge dissolves into the canvas and the frame stops
+                  reading as a pasted rectangle. It falls over black trousers
+                  and blue backdrop, not over his face. */}
+              <span aria-hidden
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-[22%] bg-linear-to-t from-canvas to-transparent" />
             </figure>
           </Reveal>
         </div>
@@ -531,9 +592,17 @@ export function Credentials() {
               never their blur: `filter` is what made this page lag, and the
               whole interactive layer is transform/opacity/clip-path only. */}
           <div className="group/creds grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {CREDENTIALS.map((c) => (
+            {CREDENTIALS.map((c, i) => (
+              /* Pinned to a board rather than set in a grid — the north star is
+                 a studio wall, and six identical rectangles was the flattest
+                 block on the page. The angles come from a fixed table, never
+                 Math.random(): this is a static export, and a random value
+                 would differ between the prerender and hydration. Straightens
+                 under the pointer, so the one you are reading is the one
+                 sitting square. */
               <a key={c.name} href={c.href} target="_blank" rel="noopener noreferrer"
-                 className="grid grid-cols-[auto_1fr] items-center gap-[18px] rounded-[8px] bg-panel p-[22px] transition-[color,background-color,opacity] duration-500 group-hover/creds:opacity-50 hover:bg-[#20211f] hover:opacity-100!">
+                 style={{ ["--tilt" as string]: `${PIN[i % PIN.length]}deg` }}
+                 className="grid grid-cols-[auto_1fr] items-center gap-[18px] rounded-[8px] bg-panel p-[22px] rotate-[var(--tilt)] transition-[color,background-color,opacity,rotate] duration-500 group-hover/creds:opacity-50 hover:rotate-0 hover:bg-[#20211f] hover:opacity-100!">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={c.img} alt="" loading="lazy" className="size-[52px] object-contain" />
                 <span>
