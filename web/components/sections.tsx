@@ -139,28 +139,51 @@ export function Nav() {
    * Which section you are in, over a 13,500px document with six nav links and
    * previously no indication at all.
    *
-   * The rootMargin collapses the viewport to a thin band across its middle, so
-   * "current" means the section crossing that line — one observer, no scroll
-   * listener, and no measurement on the fixed nav, which is where this project's
-   * compositing problems have twice come from.
+   * Read straight from geometry against a line at 45% of the viewport, rather
+   * than from IntersectionObserver. Two IO attempts failed here and both failed
+   * SILENTLY, which is the reason for the note: reacting to `isIntersecting`
+   * alone is sticky, so a layout shift during image load leaves a section
+   * marked while you are looking at the hero; caching entries in a map instead
+   * lets a stale `true` shadow a later section, so it reported "About" while
+   * the viewport was in Experience. Geometry has no delivery order to get
+   * wrong.
    *
-   * A missed entry degrades to no dot rather than to a wrong one, and the hero
-   * is deliberately unrepresented: it is not in NAV, so nothing is marked until
-   * you reach About.
+   * The scroll handler is rAF-coalesced and passive, and does nothing but read
+   * six rects and set a string. This is not the scroll-driven ANIMATION this
+   * project removed — nothing here re-drives a timeline from JS.
+   *
+   * `cur` takes the LAST section that has started rather than the one
+   * containing the line, so the ~130px marquee gap between About and
+   * Disciplines keeps the previous dot instead of blanking it. Before the first
+   * section, nothing is marked — the hero is not a nav item.
    */
   useEffect(() => {
     const els = NAV
       .map((n) => document.getElementById(n.href.slice(1)))
       .filter((el): el is HTMLElement => !!el);
     if (!els.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive(`#${e.target.id}`);
-      },
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    let raf = 0;
+    const compute = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.45;
+      let cur: string | null = null;
+      for (const el of els) {
+        if (el.getBoundingClientRect().top > line) break;
+        cur = `#${el.id}`;
+      }
+      setActive(cur);
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(compute); };
+
+    compute();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
