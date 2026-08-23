@@ -235,3 +235,24 @@ a { color: inherit; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal-layer { display: none; }
 }
+
+/* The discipline toolkit's travelling beam.
+   Lives here because this project is Tailwind v4 CSS-first with no config
+   file — the source component declares `animate-move` in tailwind.config.ts,
+   which has nowhere to land, so the utility would compile to nothing and the
+   beam would never move. Transform only, so the compositor owns it. */
+@keyframes toolkit-beam {
+  from { transform: translateX(calc(var(--beam-travel) / -2)); }
+  to   { transform: translateX(calc(var(--beam-travel) / 2)); }
+}
+
+/* Distance AND duration come from the component, because both depend on how
+   many tools a discipline has. A fixed 5s only matched the source's fixed five
+   circles; anything else and the sweep outruns the pops. */
+.toolkit-beam { animation: toolkit-beam var(--beam-cycle) linear infinite; }
+
+/* The global reduce block shortens durations to .01ms, which would leave the
+   beam parked at its end position rather than stopped. Centre and hold it. */
+@media (prefers-reduced-motion: reduce) {
+  .toolkit-beam { animation: none; opacity: .45; }
+}

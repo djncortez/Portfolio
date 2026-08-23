@@ -11,14 +11,14 @@ import { motion, useReducedMotion } from "motion/react";
 import {
   NAV, HERO, ABOUT, MARQUEE, DISCIPLINES, EXPERIENCE, WORK, CREDENTIALS, CONTACT, HUE,
 } from "@/lib/content";
+import { LOGO, LOGO_BOX } from "@/lib/logos";
+import { MARK } from "./marks";
 import { Reveal, SplitLines, SplitChars, Drift, HeroDrift, WipeIn } from "./motion";
 import {
-  Lens, Compare, StickyReveal, Magnetic, Tilt, TiltLift, Highlight, PointerReveal,
+  Lens, Compare, StickyReveal, Magnetic, Tilt, TiltLift, Highlight, PointerReveal, Pin,
 } from "./interactive";
 
 const shell = "mx-auto w-full max-w-[1280px] px-5 md:px-8";
-/** Pin angles for the credentials board. Fixed, not random — see Credentials. */
-const PIN = [-1.4, 0.9, -0.6, 1.2, -1.1, 0.5];
 const section = "py-[clamp(80px,10vw,140px)]";
 
 /** The recurring signature: every section opens with one. */
@@ -120,6 +120,141 @@ function Frame({ src, alt, label }: { src: string; alt: string; label: string })
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} loading="lazy"
            className="aspect-video w-full object-contain" />
+    </div>
+  );
+}
+
+/** Twelve fixed sparkle positions. Not Math.random(): the original rolls them
+ *  during render, which mismatches between the prerender and hydration of a
+ *  static export. Percentages, so they scale with the beam. */
+const SPARK = [
+  [8, 12, 0.0], [62, 4, 0.7], [30, 22, 1.4], [88, 16, 0.3],
+  [44, 33, 1.9], [15, 41, 0.9], [73, 47, 2.4], [51, 58, 0.5],
+  [22, 66, 1.6], [80, 74, 1.1], [37, 83, 2.1], [66, 92, 0.2],
+];
+
+/**
+ * The discipline toolkit, after Aceternity's feature-block "damn good card".
+ *
+ * The composition is kept because it is already this site's own gesture: the
+ * original grades its circles 8 / 12 / 16 / 12 / 8 outward from the centre, and
+ * the logo mark is a C resolving out of three shrinking points where the size
+ * gradient is load-bearing. Generalised to any count here, since the four
+ * disciplines carry different numbers of tools rather than the fixed five.
+ *
+ * Rebuilt rather than dropped in, because three things in the original are the
+ * inverse of this system:
+ *  - Depth is entirely box-shadow — an inset rim on every circle and on the
+ *    card. Replaced by a hairline border and the --panel surface step, which is
+ *    what DESIGN.md uses instead; box-shadow does not exist here.
+ *  - The logos are full brand colour (a #CC9B7A tile, two gradient marks).
+ *    Monochrome in currentColor instead: 22 vendor colours would be the largest
+ *    source of decorative colour on a site that allows five hues, all meaning.
+ *    The beam carries the discipline's OWN hue, so the one colour in the card
+ *    is taxonomy rather than decoration.
+ *  - Sparkles animate `top`/`left`, which lays out every frame. Transform and
+ *    opacity only here.
+ *
+ * The wave is declarative rather than the original's imperative `animate()`
+ * over `.circle-N` selectors: each circle owns its own delay, so the effect
+ * does not depend on a DOM query matching a hard-coded count, and it stops
+ * under reduced motion.
+ *
+ * Every tool name stays as text beneath the row. The original is icons-only,
+ * but this list is how a recruiter finds "PostgreSQL" on the page, and four
+ * tools have no mark in simple-icons at all (Matplotlib, Power BI, ChatGPT and
+ * VS Code — all withdrawn there on trademark grounds). The caption is the
+ * record; the circles are the picture.
+ */
+function Toolkit({ tags, hue }: { tags: string[]; hue: keyof typeof HUE }) {
+  const reduce = useReducedMotion();
+  const marks = tags.filter((t) => LOGO[t] || MARK[t]);
+  const centre = (marks.length - 1) / 2;
+  // floor, not round. With an even count the centre sits on .5, and rounding
+  // demotes BOTH middle circles a step so the row never reaches full size —
+  // measured 51px where the gradient's peak should be 64.
+  const size = (i: number) => Math.max(34, 64 - Math.floor(Math.abs(i - centre)) * 13);
+  const box = (t: string) => MARK[t]?.box ?? LOGO_BOX[t] ?? 24;
+  const cycle = marks.length * 0.8 + 1;
+
+  // The beam and the wave have to share one clock. In the source they happen to
+  // agree — five circles at 0.8s plus a 1s rest is exactly the beam's 5s — but
+  // that is a coincidence of the fixed count, and generalising the row broke it:
+  // a seven-tool cycle runs 6.6s against a beam still hard-coded to 5s, which is
+  // the drift you can see as the scanner outrunning the pops.
+  //
+  // So the beam's period IS the cycle, and each circle is timed to the moment
+  // the beam actually crosses it: solve for when the sweep reaches that circle's
+  // centre, then start the pulse 0.4s earlier so its PEAK lands there rather
+  // than its beginning.
+  const GAP = 8;
+  const sizes = marks.map((_, i) => size(i));
+  const rowW = sizes.reduce((a, b) => a + b, 0) + GAP * Math.max(0, marks.length - 1);
+  const travel = rowW + 72;
+  const centres: number[] = [];
+  let run = -rowW / 2;
+  for (const w of sizes) { centres.push(run + w / 2); run += w + GAP; }
+  const popAt = (i: number) =>
+    Math.max(0, cycle * ((centres[i] + travel / 2) / travel) - 0.4);
+
+  return (
+    <div className="overflow-hidden rounded-[8px] border border-hair bg-panel"
+         style={{
+           ["--hue" as string]: HUE[hue],
+           ["--beam-travel" as string]: `${travel}px`,
+           // toFixed: 6 * 0.8 + 1 is 5.800000000000001 in binary floating point,
+           // and that lands verbatim in the served HTML.
+           ["--beam-cycle" as string]: `${cycle.toFixed(2)}s`,
+         }}>
+      <div className="relative flex h-[164px] items-center justify-center overflow-hidden">
+        <div className="flex shrink-0 items-center justify-center gap-2">
+          {marks.map((t, i) => (
+            <motion.span
+              key={t}
+              aria-hidden
+              animate={reduce ? undefined : { scale: [1, 1.1, 1], y: [0, -4, 0] }}
+              transition={{
+                duration: 0.8, ease: "easeInOut", repeat: Infinity,
+                repeatDelay: cycle - 0.8, delay: popAt(i),
+              }}
+              style={{ width: size(i), height: size(i) }}
+              className="flex shrink-0 items-center justify-center rounded-[100px] border border-hair bg-canvas"
+            >
+              <svg viewBox={`0 0 ${box(t)} ${box(t)}`} aria-hidden
+                   className="fill-current text-cream"
+                   style={{ width: size(i) * 0.42, height: size(i) * 0.42 }}>
+                {MARK[t] ? MARK[t].el : <path d={LOGO[t]!} />}
+              </svg>
+            </motion.span>
+          ))}
+        </div>
+
+        {/* The travelling beam. Its keyframes live in globals.css, NOT in a
+            tailwind config: this is Tailwind v4 CSS-first and there is no
+            config file, so the original's `animate-move` would compile to
+            nothing and the beam would sit still. */}
+        {/* Centred by a wrapper rather than by the abspos static position the
+            source leans on, so the sweep is symmetric about the row. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-2 flex items-center justify-center">
+        <div className="toolkit-beam relative h-[124px] w-px bg-linear-to-b from-transparent via-[var(--hue)] to-transparent">
+          <div className="absolute -left-9 top-1/2 h-28 w-[72px] -translate-y-1/2">
+            {SPARK.map(([left, top, delay], i) => (
+              <motion.span
+                key={i}
+                animate={reduce ? undefined : { opacity: [0, 1, 0], scale: [0.6, 1.2, 0] }}
+                transition={{ duration: 3.2, repeat: Infinity, delay, ease: "linear" }}
+                style={{ left: `${left}%`, top: `${top}%` }}
+                className="absolute size-[2px] rounded-[100px] bg-cream"
+              />
+            ))}
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <p className="border-t border-hair px-4 py-3 text-[15px] leading-[1.5] text-muted">
+        {tags.join("  ·  ")}
+      </p>
     </div>
   );
 }
@@ -430,7 +565,7 @@ export function Disciplines() {
                           className="mb-4 text-[clamp(26px,3vw,40px)] font-semibold leading-[1.05] tracking-[-0.02em]" />
               <Reveal>
                 <p className="mb-5 max-w-[36em] text-[16px] text-muted">{d.copy}</p>
-                <div className="flex flex-wrap gap-2">{d.tags.map((t) => <Tag key={t}>{t}</Tag>)}</div>
+                <Toolkit tags={d.tags} hue={d.hue} />
               </Reveal>
             </div>
           </div>
@@ -614,26 +749,39 @@ export function Credentials() {
           {/* Sibling dimming, after Aceternity's `focus cards` — but by opacity,
               never their blur: `filter` is what made this page lag, and the
               whole interactive layer is transform/opacity/clip-path only. */}
-          <div className="group/creds grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {CREDENTIALS.map((c, i) => (
-              /* Pinned to a board rather than set in a grid — the north star is
-                 a studio wall, and six identical rectangles was the flattest
-                 block on the page. The angles come from a fixed table, never
-                 Math.random(): this is a static export, and a random value
-                 would differ between the prerender and hydration. Straightens
-                 under the pointer, so the one you are reading is the one
-                 sitting square. */
-              <a key={c.name} href={c.href} target="_blank" rel="noopener noreferrer"
-                 style={{ ["--tilt" as string]: `${PIN[i % PIN.length]}deg` }}
-                 className="grid grid-cols-[auto_1fr] items-center gap-[18px] rounded-[8px] bg-panel p-[22px] rotate-[var(--tilt)] transition-[color,background-color,opacity,rotate] duration-500 group-hover/creds:opacity-50 hover:rotate-0 hover:bg-[#20211f] hover:opacity-100!">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={c.img} alt="" loading="lazy" className="size-[52px] object-contain" />
-                <span>
+          {/* auto-rows-fr: without it each row sizes to its own tallest card, so the
+              second row stood 22px taller than the first purely because one title
+              wraps. Equal rows make all six the same card. */}
+          <div className="group/creds grid auto-rows-fr gap-x-4 gap-y-[86px] pt-[78px] sm:grid-cols-2 lg:grid-cols-3">
+            {CREDENTIALS.map((c) => (
+              /* The board tilt this replaces is gone deliberately: a real 3D pin
+                 and a pinned-paper rotation are the same metaphor twice, and the
+                 pin is the better version of it. */
+              <Pin key={c.name} href={c.href} label="Verify ↗">
+                {/* These are not logo badges — they are screenshots of the
+                    certificate cards, with body text in them. At the 40px the old
+                    square tile allowed, nothing in them was legible. Every source
+                    is exactly 160px wide, so 160 is where a preview stops being a
+                    preview and starts being an upscale; the band is that width and
+                    the image runs at 1:1.
+
+                    Fixed HEIGHT for the same reason it was fixed before: the six
+                    run 84 to 145 tall, so left to themselves the IBM card's text
+                    would sit 60px higher than its neighbours'. 145 is the tallest
+                    source, so nothing is ever scaled down to fit either. */}
+                {/* self-center, not `items-center` on the card: Pin's frame is
+                    deliberately layout-neutral so other callers can row their
+                    children. Centring belongs to this card, not to the pin. */}
+                <span className="flex h-[145px] w-[160px] shrink-0 self-center items-center justify-center overflow-hidden rounded-[8px] bg-canvas">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={c.img} alt="" loading="lazy" width={160} className="w-[160px]" />
+                </span>
+                <span className="text-center">
                   {/* both were inline in the static build, so the name ran into the issuer */}
                   <span className="block text-[18px] font-semibold leading-[1.25]">{c.name}</span>
                   <span className="mt-1.5 block text-[15px] leading-[1.4] text-muted">{c.issuer}</span>
                 </span>
-              </a>
+              </Pin>
             ))}
           </div>
         </Reveal>

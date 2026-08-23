@@ -577,3 +577,133 @@ export function PointerReveal({
     </div>
   );
 }
+
+/* ---------------- pin ---------------- */
+
+/**
+ * The 3D pin, after Aceternity's `3d-pin`.
+ *
+ * The card lies flat on a ground plane and tilts up under the pointer while a
+ * marker rises above it — which is the right gesture for a credential, because
+ * the thing worth surfacing is that it is VERIFIABLE. The label is an action,
+ * not a destination: four of the six certificates resolve to the same
+ * skills.google host, so naming the host would repeat itself four times and say
+ * nothing the issuer line underneath does not already say.
+ *
+ * Three changes from the source, one of them a real defect:
+ *
+ *  - It nests an <a> inside an <a>. The container is an anchor and the pin
+ *    label is another anchor within it, which is invalid HTML — the parser
+ *    closes the first one early and the card stops being one link. The label
+ *    is a <span> here and the whole card is the single anchor.
+ *  - `blur-[2px]` and `blur-[3px]` on the stem and its dot. `filter` is what
+ *    made this page lag, and at six cards that is 24 blurred elements. Drawn
+ *    solid instead; at 1-2px the difference is not visible anyway.
+ *  - Sky, cyan and emerald throughout, plus box-shadow on the card and on all
+ *    three rings. Brand green — these are his credentials — and depth from the
+ *    --panel step, since box-shadow does not exist in this system.
+ *
+ * Without a fine pointer the whole apparatus is unreachable, so it degrades to
+ * the plain card it replaced rather than rendering a 3D context nobody can
+ * trigger.
+ */
+export function Pin({
+  label, href, children,
+}: { label: string; href: string; children: ReactNode }) {
+  const reduce = useReducedMotion();
+  const fine = useFinePointer();
+  const [lifted, setLifted] = useState(false);
+
+  // Frame only — border, surface, padding, radius. The children own their
+  // layout, so a caller can stack or row them without fighting a grid here.
+  const card =
+    "flex flex-col gap-[16px] rounded-[8px] border border-hair bg-panel p-[22px]";
+
+  if (!fine || reduce) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer"
+         className={`${card} transition-colors duration-500 hover:bg-[#20211f]`}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <a
+      href={href} target="_blank" rel="noopener noreferrer"
+      onMouseEnter={() => setLifted(true)}
+      onMouseLeave={() => setLifted(false)}
+      className="group/pin relative block h-full"
+    >
+      {/* The card stands upright at rest and only lies down under the pointer.
+          The source pre-rotates the card's own container by 70deg, which is
+          correct for the rings — they belong on the ground — but applied to the
+          card it leaves all six lying flat at rest, squashed to about a fifth
+          of their height with the text illegible. Perspective here, rotation
+          only on hover. */}
+      {/* h-full down the chain: the anchor is the grid item and stretches to the
+          tallest card in its row, but the card inside sits at content height,
+          so a row with a wrapping title left its neighbours 22px short. */}
+      <div style={{ perspective: "1000px" }} className="h-full">
+        <div
+          style={{
+            transform: lifted ? "rotateX(38deg) scale(0.9)" : "rotateX(0deg) scale(1)",
+            transformOrigin: "center bottom",
+          }}
+          className={`${card} h-full transition-transform duration-700`}
+        >
+          {children}
+        </div>
+      </div>
+
+      <div className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${lifted ? "opacity-100" : "opacity-0"}`}>
+        {/* Radar rings, on the ground plane the card tips toward. */}
+        <div style={{ perspective: "1000px", transform: "rotateX(70deg)" }}
+             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          {[0, 2, 4].map((delay) => (
+            <motion.span
+              key={delay}
+              initial={{ opacity: 0, scale: 0, x: "-50%", y: "-50%" }}
+              animate={{ opacity: [0, 1, 0.5, 0], scale: 1 }}
+              transition={{ duration: 6, repeat: Infinity, delay }}
+              className="absolute left-1/2 top-1/2 size-[9rem] rounded-[100px] bg-brand/[0.09]"
+            />
+          ))}
+        </div>
+
+        {/* The marker, rising off the card's top edge.
+            The lifted nudge is not decoration: tilting to 38deg about
+            `center bottom` and scaling to 0.9 drops the card's VISUAL top well
+            below its layout top, and the column is bottom-anchored, so without
+            this the stem stops in mid-air short of the card it is pinning.
+            Lengthening the stem would not fix it — that pushes the label up and
+            leaves the dot where it was.
+
+            The drop is a FRACTION of card height, not a fixed 42px: rotateX(38deg)
+            about `center bottom` then scale(0.9) leaves the top edge at
+            0.9*cos(38deg) = 0.709 of the height, so the top falls by ~29% of it
+            (~30% measured, perspective adds a little). 42px was that number for
+            the 139px card this started as; the badge previews make the card
+            taller and the constant would be 30px short again.
+            This wrapper is `inset-0`, so its box IS the card, and a percentage
+            translate resolves against its own height — the offset now tracks any
+            card size with no measurement. `transition-[translate]`, not
+            `transition-transform`: Tailwind v4 translate utilities compile to the
+            standalone `translate` property. */}
+        <div className={`absolute inset-0 transition-[translate] duration-700 ${lifted ? "translate-y-[30.2%]" : "translate-y-0"}`}>
+        <div className="absolute bottom-full left-1/2 flex -translate-x-1/2 flex-col items-center">
+          <span className="relative rounded-[100px] border border-hair bg-canvas px-4 py-1 text-[12px] font-semibold leading-[1.15] whitespace-nowrap text-cream">
+            {label}
+            <span aria-hidden
+                  className="absolute inset-x-[1.125rem] -bottom-px h-px bg-linear-to-r from-transparent via-brand to-transparent" />
+          </span>
+          {/* Solid, not the source's blur-[2px]: `filter` is what made this
+              page lag, and six cards would put 24 blurred nodes on screen. */}
+          <span className={`w-px bg-linear-to-b from-transparent to-brand transition-[height] duration-500 ${lifted ? "h-[54px]" : "h-[22px]"}`} />
+          <span className="size-[3px] -translate-y-[1px] rounded-[100px] bg-brand-lt" />
+        </div>
+        </div>
+      </div>
+    </a>
+  );
+}
