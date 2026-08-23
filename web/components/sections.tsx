@@ -12,7 +12,9 @@ import {
   NAV, HERO, ABOUT, MARQUEE, DISCIPLINES, EXPERIENCE, WORK, CREDENTIALS, CONTACT, HUE,
 } from "@/lib/content";
 import { Reveal, SplitLines, SplitChars, Drift, HeroDrift, WipeIn } from "./motion";
-import { Lens, Compare, StickyReveal } from "./interactive";
+import {
+  Lens, Compare, StickyReveal, Magnetic, Tilt, TiltLift, Highlight, PointerReveal,
+} from "./interactive";
 
 const shell = "mx-auto w-full max-w-[1280px] px-5 md:px-8";
 const section = "py-[clamp(80px,10vw,140px)]";
@@ -40,29 +42,33 @@ function Pill({
   const ext = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
   if (gradient) {
     return (
-      <a href={href} {...ext} className={`${base} relative text-cream hover:text-brand-lt`}>
-        {/* Gradient stroke via mask — still no fill, per the system. The conic
-            angle animates, so the light travels the outline: an animated form of
-            the one chromatic escalation DESIGN.md already permits. Repaint is
-            confined to a ~200x54 rim and stops under reduced motion. */}
-        <span
-          aria-hidden
-          className="cta-ring pointer-events-none absolute inset-0 rounded-[100px] p-[1.5px]"
-          style={{
-            WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-            WebkitMaskComposite: "xor",
-            maskComposite: "exclude",
-          }}
-        />
-        {children}
-      </a>
+      <Magnetic>
+        <a href={href} {...ext} className={`${base} relative text-cream hover:text-brand-lt`}>
+          {/* Gradient stroke via mask — still no fill, per the system. The conic
+              angle animates, so the light travels the outline: an animated form of
+              the one chromatic escalation DESIGN.md already permits. Repaint is
+              confined to a ~200x54 rim and stops under reduced motion. */}
+          <span
+            aria-hidden
+            className="cta-ring pointer-events-none absolute inset-0 rounded-[100px] p-[1.5px]"
+            style={{
+              WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+            }}
+          />
+          {children}
+        </a>
+      </Magnetic>
     );
   }
   return (
-    <a href={href} {...ext}
-       className={`${base} border border-cream text-cream hover:border-brand hover:text-brand`}>
-      {children}
-    </a>
+    <Magnetic>
+      <a href={href} {...ext}
+         className={`${base} border border-cream text-cream hover:border-brand hover:text-brand`}>
+        {children}
+      </a>
+    </Magnetic>
   );
 }
 
@@ -71,6 +77,48 @@ function Tag({ children }: { children: React.ReactNode }) {
     <span className="rounded-[8px] border border-hair px-3.5 py-2 text-[15px] leading-[1.15] text-cream">
       {children}
     </span>
+  );
+}
+
+/**
+ * Window chrome for the project shots.
+ *
+ * The three sources run 1.01, 1.99 and 2.01 aspect, so the bare images gave the
+ * section three different framings — the square one pillarboxed by ~30% a side,
+ * the other two letterboxed — in the part of the page that carries the actual
+ * evidence. The chrome supplies one consistent 16:9 for all of them, and it
+ * gives the raw white app UI a reason to be white: it reads as a screen rather
+ * than as a white rectangle on a warm near-black page.
+ *
+ * Still `contain`, and the letterboxing is now correct rather than merely
+ * tolerated: inside a titled window, a narrow page in a wide viewport is what a
+ * browser actually looks like, and the --panel step reads as the window's own
+ * background. `cover` was tried here and reverted — the AQI source is 852px
+ * wide, so filling a 1216px frame upscales it 1.43x, and nothing on this site
+ * renders above its native size. Contain scales all three DOWN (0.81x, 0.76x,
+ * 0.76x), which is also what keeps them sharp.
+ *
+ * The label is the live host where one exists and the project name otherwise.
+ * Two of the three have no deployment, and putting a github.com URL above a
+ * screenshot that is not github.com would be a caption that lies.
+ */
+function Frame({ src, alt, label }: { src: string; alt: string; label: string }) {
+  return (
+    <div className="overflow-hidden rounded-[8px] border border-hair bg-panel">
+      <div className="flex items-center gap-3.5 border-b border-hair px-4 py-3">
+        <span aria-hidden className="flex shrink-0 gap-[7px]">
+          <span className="size-[10px] rounded-[100px] bg-hair" />
+          <span className="size-[10px] rounded-[100px] bg-hair" />
+          <span className="size-[10px] rounded-[100px] bg-hair" />
+        </span>
+        <span className="truncate rounded-[100px] bg-canvas px-3.5 py-1.5 text-[13px] leading-[1.15] text-muted">
+          {label}
+        </span>
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} loading="lazy"
+           className="aspect-video w-full object-contain" />
+    </div>
   );
 }
 
@@ -91,11 +139,13 @@ export function Nav() {
           {/* 26px keeps the three trailing dots distinct; below ~22px the
               smallest falls under a pixel and the dissolve reads as fringe. */}
           <svg viewBox="0 0 128 128" aria-hidden className="block size-[26px] shrink-0">
-            <path d="M 88.43 93.11 A 38 38 0 1 1 52.26 27.86" fill="none"
-                  stroke="#0ae448" strokeWidth="12" strokeLinecap="round" />
-            <circle cx="64.66" cy="26.01" r="4.08" fill="#0ae448" />
-            <circle cx="77.00" cy="28.29" r="2.77" fill="#0ae448" />
-            <circle cx="87.91" cy="34.47" r="1.89" fill="#0ae448" />
+            <g className="logo-mark">
+              <path d="M 88.43 93.11 A 38 38 0 1 1 52.26 27.86" fill="none"
+                    stroke="#0ae448" strokeWidth="12" strokeLinecap="round" />
+              <circle cx="64.66" cy="26.01" r="4.08" fill="#0ae448" />
+              <circle cx="77.00" cy="28.29" r="2.77" fill="#0ae448" />
+              <circle cx="87.91" cy="34.47" r="1.89" fill="#0ae448" />
+            </g>
           </svg>
           <span>Cortez<span className="text-brand">.</span></span>
         </a>
@@ -139,6 +189,8 @@ export function Hero() {
   return (
     <header id="top" ref={heroRef}
             className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-[110px] pb-[70px] md:pt-[140px] md:pb-[90px]">
+      {/* z-0, under every content layer, and aria-hidden: it is texture. */}
+      <div aria-hidden className="chalk-grid pointer-events-none absolute inset-0 z-0" />
       <div className={`${shell} hero-container relative`}>
         <Reveal y={16} delay={0.1}>
           <p className="mb-[clamp(24px,4vw,44px)] flex flex-wrap items-center gap-[18px] text-[11px] leading-[1.36] text-white/70">
@@ -146,10 +198,22 @@ export function Hero() {
           </p>
         </Reveal>
 
-        <h1 className="t-display relative z-2 font-semibold tracking-[-0.02em]">
-          <SplitChars text={HERO.given} className="block" />
-          <SplitChars text={HERO.family} className="block text-brand" />
-        </h1>
+        {/* The overlay is the same component in `still` mode, so it cannot wrap
+            differently from the heading it sits on top of. */}
+        <PointerReveal
+          className="t-display relative z-2 font-semibold tracking-[-0.02em]"
+          overlay={
+            <>
+              <SplitChars text={HERO.given} className="block" still />
+              <SplitChars text={HERO.family} className="block" still />
+            </>
+          }
+        >
+          <h1 className="t-display font-semibold tracking-[-0.02em]">
+            <SplitChars text={HERO.given} className="block" />
+            <SplitChars text={HERO.family} className="block text-brand" />
+          </h1>
+        </PointerReveal>
 
         {/* Bleeds past the container rather than sitting inside it. Split in
             two because the entrance and the scroll drift both want `transform`
@@ -171,7 +235,10 @@ export function Hero() {
 
         <Reveal delay={0.72}>
           <p className="relative z-2 mt-10 max-w-[30em] text-[19px] text-muted">
-            {HERO.sub}<strong className="font-normal text-cream">{HERO.subEm}</strong>.
+            {HERO.sub}
+            <Highlight>
+              <strong className="font-normal text-cream">{HERO.subEm}</strong>
+            </Highlight>.
           </p>
         </Reveal>
 
@@ -418,18 +485,19 @@ export function Work() {
               </a>
             </div>
 
-            <div className="relative">
-              <WipeIn className="overflow-hidden rounded-[8px] bg-panel">
-                {/* contain, not cover: sources run 0.45 to 2.01 aspect and cover
-                    cropped the subject out of the square and portrait ones */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={w.shot} alt={w.alt} loading="lazy" className="aspect-video w-full object-contain" />
+            <Tilt>
+              <WipeIn className="overflow-hidden rounded-[8px]">
+                <Frame src={w.shot} alt={w.alt}
+                       label={w.live ? new URL(w.live).host : w.title} />
               </WipeIn>
-              <Drift dir={-1}
-                     className="pointer-events-none absolute right-[-2%] bottom-[-8%] z-2 w-[clamp(90px,26vw,150px)] md:right-[-3%] md:bottom-[-12%] md:w-[clamp(120px,17vw,230px)]">
-                <Obj name={w.object} />
-              </Drift>
-            </div>
+              {/* Positioning moves out to TiltLift, which owns translateZ, so
+                  Drift keeps sole ownership of `transform` on its own node. */}
+              <TiltLift className="pointer-events-none absolute right-[-2%] bottom-[-8%] z-2 w-[clamp(90px,26vw,150px)] md:right-[-3%] md:bottom-[-12%] md:w-[clamp(120px,17vw,230px)]">
+                <Drift dir={-1}>
+                  <Obj name={w.object} />
+                </Drift>
+              </TiltLift>
+            </Tilt>
 
             <div className="mt-7 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
               <div>
@@ -459,10 +527,13 @@ export function Credentials() {
         <SplitLines as="h2" lines={["Certifications & badges."]}
                     className="mb-[clamp(28px,3vw,44px)] text-[clamp(34px,5vw,66px)] font-semibold leading-none tracking-[-0.02em]" />
         <Reveal>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Sibling dimming, after Aceternity's `focus cards` — but by opacity,
+              never their blur: `filter` is what made this page lag, and the
+              whole interactive layer is transform/opacity/clip-path only. */}
+          <div className="group/creds grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CREDENTIALS.map((c) => (
               <a key={c.name} href={c.href} target="_blank" rel="noopener noreferrer"
-                 className="grid grid-cols-[auto_1fr] items-center gap-[18px] rounded-[8px] bg-panel p-[22px] transition-colors duration-500 hover:bg-[#20211f]">
+                 className="grid grid-cols-[auto_1fr] items-center gap-[18px] rounded-[8px] bg-panel p-[22px] transition-[color,background-color,opacity] duration-500 group-hover/creds:opacity-50 hover:bg-[#20211f] hover:opacity-100!">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={c.img} alt="" loading="lazy" className="size-[52px] object-contain" />
                 <span>

@@ -121,3 +121,117 @@ a { color: inherit; text-decoration: none; }
     background: linear-gradient(114deg, var(--color-brand) 20%, var(--color-brand-lt) 66%);
   }
 }
+
+/* The nav mark spins like the loading screen it winks at, then settles back
+   into a readable "C" and holds — so it reads as a mark first, a loop second.
+   Spin 2.94s, hold 3.46s.
+   1080deg (3 turns) lands on the same angle as 0deg, so the hold-to-restart
+   wrap at 100%->0% is seamless.
+   `view-box` + an explicit 64 64, NOT `fill-box`/`center`: fill-box centres on
+   the bounding box of the geometry, and the three trailing dots drag that box
+   to (57.9, 62.0) — 6px off the arc's true centre, so the mark visibly orbits
+   instead of spinning in place. 64 64 IS the arc centre (the path is r=38 about
+   it, 50deg to 252deg). */
+.logo-mark {
+  transform-box: view-box;
+  transform-origin: 64px 64px;
+  animation: logo-spin 6.4s infinite;
+}
+
+/* A keyframe's timing function governs the segment that STARTS at it: spin up,
+   cruise, spin down, hold. A single ease across the whole rotation decelerates
+   the cruise too and reads as a stutter rather than a spin-down.
+
+   Treated as real angular motion at 481deg/s, so the three distances are not
+   free — they are what that speed covers in each phase:
+     spin up  0.50s  0 -> 481deg/s, constant accel => 120deg   (0 -> 7.8%)
+     cruise   1.54s  481deg/s linear              => 742deg   (7.8 -> 31.9%)
+     spin down 0.90s 481 -> 0deg/s, constant accel => 218deg   (31.9 -> 45.9%)
+   totalling 1080deg (3 turns) in 2.94s, then a 3.46s hold. 1080 is congruent to
+   0, so the 100% -> 0% wrap is seamless.
+
+   Both ramps are the EXACT constant-acceleration quadratics — cubic-bezier
+   (1/3,0,2/3,1/3) is y=x^2 and (1/3,2/3,2/3,1) is its mirror — so acceleration
+   never changes sign and peak speed IS the cruise speed. Stock eases were tried
+   and measured first: they spiked to 964deg/s (an ease-in with x2=1 exits on a
+   VERTICAL tangent, i.e. unbounded velocity) and the spin-down re-accelerated to
+   595deg/s before braking, both visible as a hitch. Velocity-matching the joins
+   alone still peaked at 507deg/s, because covering 180deg in 0.512s while ending
+   at 433deg/s forces a bulge past the cruise. If you retime this, rescale the
+   DISTANCES with the speed or the hitch comes back. */
+@keyframes logo-spin {
+  0%    { transform: rotate(0deg);    animation-timing-function: cubic-bezier(0.333, 0, 0.667, 0.333); }
+  7.8%  { transform: rotate(120deg);  animation-timing-function: linear; }
+  31.9% { transform: rotate(862deg);  animation-timing-function: cubic-bezier(0.333, 0.667, 0.667, 1); }
+  45.9% { transform: rotate(1080deg); }
+  100%  { transform: rotate(1080deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark { animation: none; }
+}
+
+/* ==========================================================
+   Hero additions
+   ========================================================== */
+
+/* A faint ruled board behind the hero — the "chalkboard" half of the north
+   star, which the palette implied but nothing ever drew.
+   Deliberately a single background-image on one element: it rasterises once
+   and is never repainted, so unlike the canvas field this replaced it cannot
+   compete with scrolling. The mask fades it out before it reaches the type,
+   so it never sits behind a text bounding box and cannot move measured
+   contrast. */
+.chalk-grid {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--color-hair) 50%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 34px 34px;
+  /* The fade is set by CONTRAST, not by taste. A dot at full strength drops
+     --muted text from 5.77:1 to 4.13:1, under the 4.5 floor that applies below
+     24px — and muted was lifted from #7c7c6f to #8e8e82 precisely to buy that
+     margin, so the grid must not spend it. `transparent 62%` of a 88%-tall
+     gradient puts the last dot at ~55% of hero height; the sub-paragraph and
+     the stats row start at ~63%, so no muted text ever has a dot behind it.
+     The eyebrow does, and measures 7.5:1 there. */
+  -webkit-mask-image: radial-gradient(120% 88% at 50% 0%, #000 0%, #000 22%, transparent 62%);
+  mask-image: radial-gradient(120% 88% at 50% 0%, #000 0%, #000 22%, transparent 62%);
+}
+
+/* The cursor-following reveal over the hero name. The mask is driven by two
+   custom properties that PointerReveal writes straight onto the node, so a
+   mousemove costs a style recalc on one element and no React render.
+   Only `opacity` transitions — the mask position must track the pointer
+   exactly, and easing it would make the light lag behind the cursor.
+
+   @property is what makes this work at all, and not for interpolation this
+   time: without a registered initial value, --rx and --ry are unset until the
+   first mousemove, which makes the whole radial-gradient invalid at computed
+   value time. The mask then resolves to `none` and the layer reveals the
+   ENTIRE name in flat green instead of a disc under the cursor. Measured as
+   maskImage: none before this was added. */
+@property --rx { syntax: "<length-percentage>"; inherits: true; initial-value: 50%; }
+@property --ry { syntax: "<length-percentage>"; inherits: true; initial-value: 50%; }
+@property --rr { syntax: "<length>"; inherits: true; initial-value: 190px; }
+
+.reveal-layer {
+  opacity: 0;
+  transition: opacity .28s ease-out;
+  -webkit-mask-image: radial-gradient(circle var(--rr) at var(--rx) var(--ry), #000 0%, #000 42%, transparent 100%);
+  mask-image: radial-gradient(circle var(--rr) at var(--rx) var(--ry), #000 0%, #000 42%, transparent 100%);
+}
+
+.reveal-layer[data-on="1"] { opacity: 1; }
+
+/* If masking is unavailable the layer would paint the name flat green over
+   itself, so it is withdrawn entirely. Nothing is lost — it is decoration, and
+   the real heading underneath is untouched and never hidden. */
+@supports not (mask-image: radial-gradient(circle 1px at 1px 1px, #000, transparent)) {
+  .reveal-layer { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-layer { display: none; }
+}

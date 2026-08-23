@@ -159,8 +159,16 @@ export function SplitLines({
  *
  * No reveal gate here: this is above the fold by definition and animates on
  * mount, so there is no observer to miss.
+ *
+ * `still` renders the identical span structure with the entrance stripped out.
+ * That exists so PointerReveal's overlay copy can be guaranteed to wrap exactly
+ * like the real heading — same component, same classes, same container — rather
+ * than being a hand-rolled duplicate that drifts out of step the first time the
+ * wrapping rules change.
  */
-export function SplitChars({ text, className }: { text: string; className?: string }) {
+export function SplitChars({
+  text, className, still = false,
+}: { text: string; className?: string; still?: boolean }) {
   const reduce = useReducedMotion();
   let n = 0;
   return (
@@ -173,14 +181,18 @@ export function SplitChars({ text, className }: { text: string; className?: stri
               const i = n++;
               return (
                 <span key={ci} className="char-mask">
-                  <motion.span
-                    className="inline-block"
-                    initial={reduce ? false : { y: "155%" }}
-                    animate={{ y: "0%" }}
-                    transition={{ duration: 1.05, ease: EASE, delay: 0.12 + i * 0.024 }}
-                  >
-                    {ch}
-                  </motion.span>
+                  {still ? (
+                    <span className="inline-block">{ch}</span>
+                  ) : (
+                    <motion.span
+                      className="inline-block"
+                      initial={reduce ? false : { y: "155%" }}
+                      animate={{ y: "0%" }}
+                      transition={{ duration: 1.05, ease: EASE, delay: 0.12 + i * 0.024 }}
+                    >
+                      {ch}
+                    </motion.span>
+                  )}
                 </span>
               );
             })}
